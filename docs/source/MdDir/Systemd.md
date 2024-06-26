@@ -1,0 +1,260 @@
+
+
+## 1. init进程
+- Linux下，init主要有三个实现版本：
+	1. System V,传统的init;
+	2. Upstart，Ubuntu后期针对sys-v的一个改进实现版本;
+	3. systemd，是一套中央化系统及设置管理程序，包括有守护进程、程序库以及应用软件,兼容sys-v。现代大部分桌面版都使用此实现。
+- init是内核启动的第一个用户空间进程，主要负责启动、终止系统中的基础服务进程。
+- Linux 系统在启动过程中，内核完成初始化以后，由内核第一个启动的程序便是 init 程序，路径为 `/sbin/init`，其 PID 为1，它为系统里所有进程的“祖先”，Linux 中所有的进程都由 init 进程直接或间接进行创建并运行，init 进程以守护进程的方式存在，负责组织与运行系统的相关初始化工作，让系统进入定义好的运行模式，如命令行模式或图形界面模式。
+
+## 2. SystemV [ System V Release 1/2/3/4]
+- SystemV启动过程：
+	- SystemV init --> /etc/inittab/--> /etc/init.d/
+- SystemV  init  进程只是执行启动脚本，不管其他事情。脚本需要自己处理各种情况，这往往使得脚本变得很长
+- SystemV  init 依赖一个特定的启动顺序每次只能启动执行一个启动任务。这些都是通过一个核心配置文件`/etc/inittab`和一组启动脚本`/etc/init.d/`以及符号链接集执行的，本质上为系统提供了合理的启动顺序，支持不同的运行级别。
+- 服务脚本文件存放在目录 `/etc/init.d `下 或者目录 `/etc/rc.d/init.d/` 下，可以使用 `/etc/init.d/daemon [start|stop|restart|reload|status]` 方式来管理服务。init 程序的配置文件存放在目录 `/etc/inittab/` 下，用来设置系统的默认运行级别，init进程运行后首先会读取/etc/inittab文件，根据inittab文件中的内容依次执行。
+
+- `/etc/inittab`：inittab是一个不可执行的文本文件，它被要求按照固定的格式书写，从而便于init进程识别。inittab的每一行都是一个登记项，它的结构如下：
+	- `label:runlevels :action :process`
+		- `label` : 是每个登记项的标识符，最多为4个字符，用于唯一标识每个登记项，不能重复；
+			```python
+			id：用来定义缺省的init运行的级别
+			si：是系统初始化的进程
+			ln：其中的n从1~6,指明该进程可以使用的runlevel的级别
+			ud：是升级进程
+			ca：指明当按下Ctrl+Alt+Del是运行的进程
+			pf：指当UPS表明断电时运行的进程
+			pr：是在系统真正关闭之前，UPS发出电源恢复的信号时需要运行的进程
+			x：是将系统转入X终端时需要运行的进程
+			```
+		- `runlevels`: 是系统运行级别，用于指定相应的登记项在哪个运行级别中处理。如果该字段为空， 那么相应的登记项将适用于所有的运行级别。在该字段中，可以同时指定一个或多个运行级别，其中各运行级别分别以数字0.1.2.3.4.5.6表示，且无需对其进行分隔；
+		- `action` ：表示对应登记项的process在一定条件下所要执行的动作；
+			```python
+			respawn：意思就是当后面的要执行的程序终止了，init进程会自动重启该进程。
+			wait：init应该运行这个进程一次，并等待其结束后再进行下一步操作
+			once：init只运行一次该进程
+			boot：系统地运行该进程
+			bootwait：在系统启动时运行，init等待进程完成
+			ctrlaltdel：当Ctrl+Alt+Del三个键同时按下时运行，把SIGINT信号发送给init
+			sysinit：在运行boot或bootwait进程之前运行
+			powerfail：当init收到SIGWR信号时运行
+			powerokwait：当收到SIGWD信号且/etc/文中 的电源状态包含OK时运行
+			powerwait：当收到SIGPWD信号，并且init等待进程结束时运行。
+			```
+		- `process` : pocess表示所要执行的shell命令。任何合法的shell语法都适用于该字段。
+	- 默认的运行级别在 `/etc/inittab` 文件中定义，当系统以某个运行级别启动时，会运行 `/etc/rc.d/rcN.d/`（其中 N 范围为0~6）目录中所有的脚本，而这些脚本的命名都是Knnxxxxx或Snnxxxxx，对于以 K(kill)开头的文件，系统将终止对应的服务，对于以 S(start)开头的文件，系统将启动对应的服务，nn是数字，数字的大小决定了脚本运行的顺序，最后的xxxxx为脚本的名称（长度任意），这些目录里的文件都是指向init.d目录中脚本的软连接，因为各个运行级别的所需的服务可能存在交集，所以这样能节省硬盘使用空间。
+		```python
+		# 在 SysV init 中，定义了6个运行级别，分别是：
+		runlevel0：关机，系统默认运行级别不能设为 0，否则不能正常启动。
+		runlevel1：单用户模式，仅root。用于系统维护，禁止远程登陆。
+		runlevel2：多用户状态(没有NFS)，没有网络连接。
+		runlevel3：完全的多用户状态（有NFS），登陆后进入控制台命令行模式。
+		runlevel4：系统未使用，保留。
+		runlevel5：X11 控制台，登陆后进入图形 GUI 模式。
+		runlevel6：停止linux系统，并按照/etc/inittab默认的登记项重新引导系统。默认运行级别不能设为 6，否则不能正常启动。
+		```
+- SysV init 守护进程是一个基于运行级别的系统，它使用运行级别(单用户、多用户以及其他更多级别)和链接(位于 `/etc /rcN.d/` 目录中，分别链接到 `/etc/init.d` 中的 init 脚本)来启动和关闭系统服务。SysV启动是线性、顺序的。一个S20的服务必须要等待S19启动完成才能启动，如果一个启动要花很多时间，那么后面的服务就算完全无关，也必须要等待。
+- 它的好处是依赖关系简单，任务之间泾渭分明的一个一个启动，即使某个基础服务出了错也便于排查。但也正因为如此，他的启动性能很不好。服务无法并行启动不说，而且只能按照预先规定的顺序启动服务。如果你安装了新的硬件或者新服务，他不提供及时支持的标准方法。
+
+## 3. Systemd
+- 描述：是一个 Linux 系统基础组件的集合，提供了一个系统和服务管理器，运行为 PID 1 并负责启动其它程序。
+- 优点：
+	1.	采用Socket激活式与总线激活式服务，以提高相互依赖的各服务的并行运行性能;
+	3.	按需启动守护进程（daemon）,只有在某个服务被真正请求的时候才启动它；
+	4.	用Cgroups代替PID来追踪进程，因此即使是两次fork之后生成的守护进程也不会脱离systemd的控制;
+	5.	兼容systemVinit。
+	....
+	
+### 3.1. systemd启动过程：
+- systemd –> default.target –> graphical.target....
+	- `systemctl get-default`：默认target;
+	- `systemctl set-default multi-user.target`：设置默认target；
+	- default.target(`/usr/lib/systemd/system/default.target`)是一个链接文件，指向默认target。
+- target：为其他配置单元进行逻辑分组。比如想让系统进入图形化模式，需要运行许多服务和配置命令，这些操作都由一个个的配置单元表示，将所有这些配置单元组合为一个目标(target)，就表示需要将这些配置单元全部执行一遍以便进入目标所代表的系统运行状态。
+
+### 3.2. Unit
+- systemd 开启和监督整个系统是基于 unit 的概念。可以简单理解为 systemd 启动后每次需要执行的服务，每次需要处理的资源，都被抽象为一个配置单元 Unit，保存在一个 Unit 文件里面
+- unit类型：unit表示不同类型的systemd对象，并提供了处理不同单元之间依赖关系的能力,通过配置文件进行标识和配置；Systemd 可以管理的系统资源。不同的资源统称为 unit（单元），unit有11种。
+	- `systemctl -t help`：查看unit类型。
+	| 序号名 | 资源名称 | 含义 |
+	| --- | --- | --- |
+	| 1 | service | 系统服务 |
+	| 2 | socket | 用于标识进程间通信的socket |
+	| 3 | target | 用于模拟实现“运行级别” |
+	| 4 | device | 硬件设备 |
+	| 5 | mount | 文件系统挂载点 |
+	| 6 | automount | 自动挂载点 |
+	| 7 | swap | 用于标识swap设备（交换空间） |
+	| 8 | timer | 定时器 |
+	| 9 | path | 文件或路径 |
+	| 10 | slice | 进程组 |
+	| 11 | scope | 不是由systemd启动的外部进程 |
+- target和运行级别
+	- `ls -l /usr/lib/systemd/system/runlevel?.target`
+	| 运行级别 | target | 含义 |
+	| --- | --- | --- |
+	| 0 | poweroff.target | 关机 |
+	| 1 | rescue.target | 单用户模式 |
+	| 2 | multi-user.target | 多用用户模式，没有NFS |
+	| 3 | multi-user.target | 完整的多用户模式 |
+	| 4 | multi-user.target | 未使用 |
+	| 5 | graphical.target | 图形界面 |
+	| 6 | reboot.target | 重启 |
+	- `systemctl list-dependencies graphical.target`：查看graphical.target依赖关系；
+	- `man booup`：系统启动流程。
+- Unit配置文件
+- 概述：每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit。
+- 配置文件目录`man systemd.unit`
+	- `/usr/lib/systemd/system`或`/lib/systemd` : 使用包管理器安装的软件的 systemd unit 件实际配置文件的存放位置
+	- `/run/systemd/system`：在运行时创建的systemd unit 文件。该目录优先于已安装服务单元文件的目录。
+	- `/etc/systemd/system`:优先级最高，由 systemctl 命令创建的 systemd unit 文件以及为扩展服务而添加的 unit 文件都将启用。
+- Systemd 默认从目录`/etc/systemd/system/`读取配置文件。里面存放的大部分文件都是链接，指向目录`/usr/lib/systemd/system/`。
+- Service文件
+	- 在systemd中一个.service就是一个服务类型的配置单元，同时也代表了一个服务功能。使用`sysctemctl cat ssh.service`来查看ssh.service文件内容，该文件就在/lib/systemd/system下.
+		```python
+		[Unit]    																						# 主要描述启动顺序与依赖关系
+		Description=OpenBSD Secure Shell server      						# 一段描述Service的信息
+		Documentation=man:sshd(8) man:sshd_config(5)
+		After=network.target auditd.service											 # 表示ssh.service在network.target auditd.service单元之后启动。另外还有一个属性Before，表示当前单元在列出的单元之前启动。After、Before定义了单元之间启动的顺序。
+		ConditionPathExists=!/etc/ssh/sshd_not_to_be_run				# 表示在后面的路径存在时返回true,这里使用了!非运算符，取反的意思。
+
+		[Service]																					# 这个区块定义如何启动当前服务
+		EnvironmentFile=-/etc/default/ssh										# 指定当前服务环境参数文件，内部使用键值对定义，可以使用$key读取值，比如后面的$SSHD_OPTS
+		ExecStartPre=/usr/sbin/sshd -t											# 定义启动服务前执行的指令
+		ExecStart=/usr/sbin/sshd -D $SSHD_OPTS						# 定义启动程序执行的指令
+		ExecReload=/usr/sbin/sshd -t											# 表示重启服务时执行的命令。
+		ExecReload=/bin/kill -HUP $MAINPID
+		KillMode=process															# 定义 Systemd 如何停止 sshd 服务，process表示当kill sshd服务的时候，仅杀死主进程，子进程还是留着的。control-group（默认值）：当前控制组里面的所有子进程，都会被杀掉；mixed：主进程将收到 SIGTERM 信号，子进程收到 SIGKILL 信号；none：没有进程会被杀掉，只是执行服务的 stop 命令
+		Restart=on-failure															# 定义了 sshd 退出后，Systemd 的重启方式。on-failure：表示任何意外的失败，就将重启sshd；no（默认值）：退出后不会重启；on-success：只有正常退出时（退出状态码为0），才会重启；on-abnormal：只有被信号终止和超时，才会重启；on-abort：只有在收到没有捕捉到的信号终止时，才会重启；on-watchdog：超时退出，才会重启；always：不管是什么退出原因，总是重启。
+		RestartPreventExitStatus=255									# 符合某些退出状态时不要进行重启，该参数的值支持exit code和信号名2种，可写多个，以空格分隔。当退出状态码为255时不重启
+		Type=notify																	# 定义启动类型。notify，表示启动结束后会发出通知信号，然后 Systemd 再启动其他服务。simple（默认值）：ExecStart字段启动的进程为主进程；forking：ExecStart字段将以fork()方式启动，此时父进程将会退出，子进程将成为主进程；oneshot：类似于simple，但只执行一次，Systemd 会等它执行完，才启动其他服务；dbus：类似于simple，但会等待 D-Bus 信号后启动。
+		RuntimeDirectory=sshd
+		RuntimeDirectoryMode=0755
+
+		[Install]																	# 定义如何安装这个配置文件，即怎样做到开机启动
+		WantedBy=multi-user.target									# 表示该服务所在的Target,systemctl enable sshd.service其实就是将sshd服务的链接放在multi-user.target.wants目录下。同时multi-user.target是系统的默认target，在启动该target的时候，他下面的服务都会开机启动。这也就是只要挂上multi-user.target就能开机启动的原因。
+		Alias=sshd.service # 别名，当使用systemctl enable ssh 时，在/etc/systemd/system目录下的链接文件名就为这个。
+		```
+- 在systemd中添加单元
+	1. `vim /usr/lib/systemd/system/test.service`：添加一个service单元
+		```python
+		[Unit]
+		Description=test
+		[Service]
+		ExecStart=/root/test
+		Restart=no
+		Type=simple
+		[Install]
+		WantedBy=multi-user.target
+		Alias=test.service
+		```
+	2. `systemctl daemon-reload`：重新加载加载配置。每次修改完.service文件之后都需要重新执行
+	3. `systemctl start test`：启动该服务
+	- `systemctl edit test`：修改配置文件。
+	- `systemctl enable test`：在`/etc/systemd/system/`创建链接文件，指向`/usr/lib/systemd/system/`目录下的配置文件；如果配置文件里面有`WantedBy=multi-user.target`，还会在`/etc/systemd/system/multi-user.target.wants`创建链接文件，实现开机自启。
+- `systemctl disable test`：删除链接文件。
+- target文件
+	- 执行`systemctl cat multi-user.target`:
+		```python
+		[Unit]
+		Description=Multi-User System
+		Documentation=man:systemd.special(7)
+		Requires=basic.target
+		Conflicts=rescue.service rescue.target
+		After=basic.target rescue.service rescue.target
+		AllowIsolate=yes
+		```
+	- target文件只是组织一批服务，因此他没有[service]、[mount]等定义启动或者挂载的区块。
+		```python
+		Requires：表示强依赖关系，即必须要求basic.target启动，否则multi-user.target启动失败；
+		Conflicts：表示multi-user.target与他们互斥，不能同时处于multi-user状态和rescue状态；
+		After：表示multi-user.target在basic.target rescue.service rescue.target之后启动；
+		AllowIsolate，表示允许使用systemctl isolate命令切换到multi-user.target。
+		# systemctl isolate multi-user.target：切换target
+		```
+- 配置文件的状态
+	- `systemctl list-unit-files`：列出所有配置文件
+	- `systemctl list-unit-files --type=service`：列出指定类型的配置文件。
+- 配置文件的四种状态（state）
+	```python
+	enabled：已建立启动链接
+	disabled：未建立启动链接
+	static：该配置文件没有[insatll]部分（无法执行），只能作为其他配置文件的依赖
+	masked：该配置文件被禁止建立启动链接
+	generated：该单元由其他的API动态创建
+	bad:无效的文件
+	```
+	- 注：从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行`systemctl status`命令。
+	
+### 3.3. 系统管理
+- Systemd 并不是一个命令，而是一组命令，涉及到系统管理的方方面面。
+	- 日志服务
+		- systemd 自带日志服务 journald，该日志服务的设计初衷是克服现有的 syslog 服务的缺点。
+			- syslog 不安全，消息的内容无法验证
+			- 数据没有严格的格式，非常随意
+			- Systemd Journal 用二进制格式保存所有日志信息，用户使用 journalctl 命令来查看日志信息。无需自己编写复杂脆弱的字符串分析处理程序。
+		- 常用命令：
+			```python
+			journalctl：查看所有日志（默认情况下 ，只保存本次启动的日志）
+			journalctl -k：查看内核日志（不显示应用日志）
+			journalctl -f：实时滚动显示最新日志
+			```
+	- `systemctl`：是 Systemd 的主命令，用于管理系统。
+		```python
+		systemctl reboot：重启系统
+		systemctl poweroff：关闭系统。切断电源
+		systemctl suspend：休眠。指的是除了内存以外的大部分机器部件都进入断电状态。 这种休眠状态恢复速度特别快，但由于内存中的数据并没有被保存下来，因此这个状态的系统并没有进入真正意义上的休眠状态，还在持续耗电。
+		```
+	- `systemd-analyze`：用于查看启动耗时
+		```python
+		systemd-analyze time：查看启动耗时
+		systemd-analyze blame：查看每个服务的启动耗时
+		systemd-analyze plot > test.svg：输出一个 SVG 图像，详细显示每个单元的启动时刻， 并高亮显示每个单元总计花了多长时间才完成启动
+		```
+	- `hostnamectl`：用于查看当前主机的信息
+		```python
+		hostnamectl set-hostname wl：设置主机名。hostname wl
+		```
+	- `localectl`：用于查看本地化设置。
+		```python
+		localectl：查看本地化设置
+		localectl list-locales：列出所有可用的 locale
+		localectl set-locale LANG=en_GB.utf8：设置系统的本地化字符集环境变量
+		localectl list-keymaps：列出所有可用的控制台键盘映射
+		localectl set-keymap en_GB：设置控制台的键盘映射
+		```
+	- `timedatectl`：用于查看当前时区设置
+		```python
+		timedatectl：查看当前时区设置
+		timedatectl list-timezones  ：显示所有可用的时区
+		timedatectl set-timezone America/New_York：设置时区
+		timedatectl set-time YYYY-MM-DD：设置年月日
+		timedatectl set-time HH: MM: SS：设置时分秒
+		```
+	- `loginctl`：用于查看当前登录的用户。
+		```python
+		loginctl list-sessions：列出当前session
+		loginctl list-users：列出当前登录用户
+		loginctl show-user root：列出指定用户的信息
+		```
+- - - 
+- - -
+## 4. systemd timer
+- 与corn作用相同
+- `systemctl status *timer`：查看所有的定时器
+- `systemctl cat logrotate.timer`：查看论转日志定时器
+	```python
+	[Unit]
+	Description=Daily rotation of log files
+	Documentation=man:logrotate(8) man:logrotate.conf(5)
+
+	[Timer]
+	OnCalendar=daily
+	AccuracySec=12h
+	Persistent=true
+
+	[Install]
+	WantedBy=timers.target
+	```
+	- 
