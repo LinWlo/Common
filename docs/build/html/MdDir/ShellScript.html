@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>shell脚本 &mdash; MD 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="systemd服务" href="Systemd.html" />
+    <link rel="prev" title="操作系统基础" href="OsBase.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Welcome to Py’s documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CommonCmd.html">常用命令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CommonProblem.html">常见问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OsBase.html">操作系统基础</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">shell脚本</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">1. shell定义</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#linuxshell">2. linux中提供的shell解释器：</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">3. 运行脚本：</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4. shell语法：</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">4.1. 变量</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">4.2. 表达式</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">4.3. 数组操作</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#linxu">4.4. linxu常见符号</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7">4.5. 简单流程控制</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">4.6. 函数</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#set-e">5. set -e</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#expect">6. expect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">7. shell脚本内部调用</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">8. 内建和外部命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">9. shell中的括号</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id12">9.1. 圆括号</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">9.2. 方括号</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">9.3. 花括号</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id15">9.4. $()和``命令替换</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id16">9.5. ${}变量替换</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">10. $[]和$(())整数运算</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">11. shell中的常见使用</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id19">11.1. <code class="docutils literal notranslate"><span class="pre">=～</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#while-read">11.2. while read</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Systemd.html">systemd服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ZStack.html">ZStack</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Welcome to Py’s documentation!</a></li>
+      <li class="breadcrumb-item active">shell脚本</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/MdDir/ShellScript.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="shell">
+<h1>shell脚本<a class="headerlink" href="#shell" title="Link to this heading">¶</a></h1>
+<section id="id1">
+<h2>1. shell定义<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>shell的定义：位于操作系统和应用程序之间的一个命令解释器。是一个应用程序，它连接了用户和 Linux 内核，让用户能够更加高效、安全、低成本地使用 Linux 内核，这就是 Shell 的本质。</p></li>
+<li><p>shell的作用：负责把应用程序的输入命令信息解释给操作系统,将操作系统指令处理后的结果解释给应用程序。</p></li>
+<li><p>查看当前系统的shell类型：<code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$SHELL</span></code></p></li>
+<li><p>查看当前系统环境支持的shell：<code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">/etc/shells</span></code></p></li>
+<li><p>创建脚本：</p>
+<ul>
+<li><p>脚本命名要有意义,文件后缀是.sh</p></li>
+<li><p>脚本文件首行是而且必须是脚本解释器#!/bin/bash</p></li>
+<li><p>脚本文件解释器后面要有脚本的基本信息等内容,脚本文件中尽量不用中文注释;尽量用英文注释，防止本机或切换系统环境后中文乱码的困扰常见的注释信息：脚本名称、脚本功能描述、脚本版本、脚本作者、联系方式等</p></li>
+<li><p>脚本文件常见执行方式：bash 脚本名</p></li>
+<li><p>脚本内容执行：从上到下，依次执行</p></li>
+<li><p>成对内容的一次性写出来防止遗漏,[]中括号两端要有空格,流程控制语句一次性书写完再添加内容</p></li>
+<li><p>通过缩进让代码易读;(即该有空格的地方就要有空格)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="linuxshell">
+<h2>2. linux中提供的shell解释器：<a class="headerlink" href="#linuxshell" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">/etc/shells</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">sh</span><span class="err">：</span><span class="n">UNIX默认的shell</span><span class="err">，</span><span class="n">已经被</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash取代</span><span class="err">。</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">bash</span><span class="err">：</span><span class="n">Linux默认的shell</span><span class="err">。</span>
+<span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">nologin</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">dash</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">tcsh</span>
+<span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">csh</span>
+</pre></div>
+</div>
+</li>
+<li><p>不同的shell解析器，功能不同，比如csh，符合c语言风格的shell解析器。Centos默认使用的是“/bin/bash”和“/bin/sh”作为shell解析器。“/bin/sh”是“/bin/bash”的软连接，两者等价。</p></li>
+</ul>
+</section>
+<section id="id2">
+<h2>3. 运行脚本：<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>脚本文件无执行权限时：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">bash</span> <span class="pre">xxx.sh</span></code>：指定先用bash解析器解析，如果bash不存在，使用默认解析器；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">xxx.sh</span></code>或<code class="docutils literal notranslate"><span class="pre">.</span> <span class="pre">xxx.sh</span></code>：在当前shell进程下读取并执行脚本中的命令。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">是</span> <span class="n">Shell</span> <span class="n">内置命令的一种</span><span class="err">，</span><span class="n">它会读取脚本文件中的代码</span><span class="err">，</span><span class="n">并依次执行所有语句</span><span class="err">。</span><span class="n">你也可以理解为</span><span class="err">，</span><span class="n">source</span> <span class="n">命令会强制执行脚本文件中的全部命令</span><span class="err">，</span><span class="n">而忽略脚本文件的权限</span><span class="err">。</span><span class="n">与当前shell为同一个进程</span><span class="err">，</span><span class="n">不会新增加一个进程</span><span class="err">。</span><span class="n">可用</span> <span class="n">echo</span> <span class="err">$$</span> <span class="n">验证</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>脚本文件有执行权限时：</p>
+<ul>
+<li><p>绝对路径名运行脚本文件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">test</span><span class="o">.</span><span class="n">sh</span><span class="err">：</span><span class="n">先按照脚本文件中</span><span class="c1">#！指定的解析器解析，如果找不到使用默认解析。</span>
+</pre></div>
+</div>
+</li>
+<li><p>相对路径名运行脚本文件：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">xxx</span><span class="o">.</span><span class="n">sh</span><span class="err">：</span><span class="n">先按照脚本文件中</span><span class="c1">#！指定的解析器解析，如果找不到使用默认解析。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id3">
+<h2>4. shell语法：<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h3>4.1. 变量<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>变量分类</strong>：局部变量、环境(全局)变量、shell变量</p>
+<ul>
+<li><p>局部变量：局部变量在脚本或命令中定义，仅在当前shell实例中有效，其他shell启动的程序不能访问局部变量。包含普通变量和命令变量。</p>
+<ul>
+<li><p><strong>普通变量</strong>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">var</span><span class="o">=</span><span class="n">value</span>   <span class="c1">#普通赋值方法</span>
+<span class="n">var</span><span class="o">=</span><span class="s1">&#39;value&#39;</span> <span class="c1">#单引号只把值当字符处理，写什么内容就输出什么内容</span>
+<span class="n">var</span><span class="o">=</span><span class="s2">&quot;value&quot;</span>   <span class="c1">#双引号会引用变量的值</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>注：赋值符两边不能有空格，若变量值本身包含了空格，则整个字符串都要用双引号、或单引号括起来。</p></li>
+</ul>
+</li>
+<li><p><strong>命令变量</strong>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">变量名</span><span class="o">=</span><span class="err">`</span><span class="n">命令</span><span class="err">`</span>  <span class="c1">#格式一</span>
+<span class="n">变量名</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">命令</span><span class="p">)</span> <span class="c1">#格式二</span>
+<span class="n">如</span><span class="err">：</span><span class="n">echo</span> <span class="s2">&quot;today is `date`&quot;</span> <span class="c1">#会打印出当前日期，执行了date命令。</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>环境(全局)变量</strong>：在当前系统的所有环境下都能生效的变量。可通过<code class="docutils literal notranslate"><span class="pre">env</span></code>查看，只显示全局变量。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">语法</span><span class="err">：</span><span class="n">export</span> <span class="n">变量名</span><span class="o">=</span><span class="n">值</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>查看变量</strong>：</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$变量名</span></code> <code class="docutils literal notranslate"><span class="pre">&quot;$变量名&quot;</span></code> <code class="docutils literal notranslate"><span class="pre">${变量名}</span></code> <code class="docutils literal notranslate"><span class="pre">&quot;${变量名}&quot;</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>截取变量值</strong>：<code class="docutils literal notranslate"><span class="pre">${变量名:起始位置:截取长度}</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="err">$</span><span class="p">{</span><span class="n">var</span><span class="p">:</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span> <span class="c1">#从第1个字符开始，截取5个字符</span>
+<span class="err">$</span><span class="p">{</span><span class="n">var</span><span class="p">:</span><span class="mi">5</span><span class="p">:</span><span class="mi">5</span><span class="p">}</span> <span class="c1">#从第6个字符开始，截取5个字符</span>
+<span class="err">$</span><span class="p">{</span><span class="n">var</span><span class="p">:</span><span class="mi">0</span><span class="o">-</span><span class="mi">6</span><span class="p">:</span><span class="mi">3</span><span class="p">}</span> <span class="c1">#从倒数第6个字符开始，截取之后的3个字符。</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>变量默认值</strong>：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">${变量a:-默认值}</span></code>：变量a如果有内容,那么就输出a的变量值,变量a如果没有内容，那么就输出默认的内容。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="n">read</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;输入：&quot;</span> <span class="n">a</span>
+<span class="n">echo</span> <span class="s2">&quot;$</span><span class="si">{a:-1}</span><span class="s2">&quot;</span>  <span class="n">不输入值打印</span> <span class="mi">1</span> <span class="err">，</span><span class="n">输入值打印值</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${变量名+默认值}</span></code>：无论变量a是否有内容，都输出默认值。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="n">read</span> <span class="o">-</span><span class="n">p</span> <span class="s2">&quot;输入：&quot;</span> <span class="n">a</span>
+<span class="n">echo</span> <span class="s2">&quot;${a+15}&quot;</span>  <span class="n">无论输入什么值</span><span class="err">，</span><span class="n">都打印15</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>清除变量值</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unset</span> <span class="pre">变量名</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>shell变量</strong></p>
+<ul>
+<li><p>shell变量是由shell程序设置的特殊变量。shell变量中有一部分是环境变量，有一部分是局部变量，这些变量保证了shell的正常运行。</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">$0</span></code>：获取当前执行的shell脚本文件名</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$n</span></code>：获取当前执行的shell脚本的第n个参数值,n=1…9,当n为0时表示脚本的文件名,如果n大于9就要用大 括号括起来${10}。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="n">echo</span> <span class="s2">&quot;第一个位置的参数是： $1&quot;</span>
+<span class="n">echo</span> <span class="s2">&quot;第二个位置的参数是： $2&quot;</span>
+<span class="c1"># 运行时 `./test.sh a b`加上参数a、b则会打印出对应位置参数。</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$#</span></code>：获取当前脚本传入参数的个数（通常用于循环）。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$&#64;</span></code>	获取当前脚本的所有参数，组成数组。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$*</span></code>：获取当前脚本的所有参数组成数组，但是当被双引号包裹时<code class="docutils literal notranslate"><span class="pre">&quot;$*&quot;</span></code>，所有参数会被整合为字符串。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$?</span></code>：获取文件执行或者命令执行的返回状态值。如果这个变量的值为0，证明上一个命令正确执行；如果这个变量的值为非0，则证明上一个命令执行不正确了。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$$</span></code>：程序本身的PID号。</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id5">
+<h3>4.2. 表达式<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>测试语句</strong></p>
+<ul>
+<li><p><strong>应用场景</strong>：Shell环境根据命令执行后的返回状态值<code class="docutils literal notranslate"><span class="pre">$?</span></code>来判断是否执行成功,当返回值为0,表示成功,值为其他时,表示失败。使用专门的测试工具——test命令,可以对特定条件进行测试,并根据返回值来判断条件是否成立(返回值0为成立）。</p></li>
+<li><p><strong>语法</strong>：<code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">条件表达式</span></code>或<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">条件表达式</span> <span class="pre">]</span></code></p>
+<ul class="simple">
+<li><p>条件成立，状态返回值是0,条件不成立，状态返回值是1。</p></li>
+<li><p>括号[ ]与条件表达式两侧都要有空格，否者不符合规范。</p></li>
+</ul>
+</li>
+<li><p><strong>条件表达式</strong>：</p>
+<ul>
+<li><p>逻辑表达式：常见的逻辑表达式有<code class="docutils literal notranslate"><span class="pre">&amp;&amp;</span></code> <code class="docutils literal notranslate"><span class="pre">||</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">命令1</span> <span class="pre">&amp;&amp;</span> <span class="pre">命令2</span> <span class="pre">]</span></code>：命令1执行成功，命令2执行，否则命令2不执行。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">1</span>  <span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">echo</span> <span class="s2">&quot;条件成立&quot;</span> <span class="c1">#命令1执行成功，命令2执行。</span>
+<span class="p">[</span> <span class="mi">1</span> <span class="o">=</span> <span class="mi">2</span> <span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">echo</span> <span class="s2">&quot;条件成立&quot;</span> <span class="c1">#命令1执行失败，命令2不执行。</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">命令1</span> <span class="pre">||</span> <span class="pre">命令2</span></code>：命令1执行成功，命令2不执行，命令1执行失败，命令2执行。</p></li>
+</ul>
+</li>
+<li><p>文件表达式：<code class="docutils literal notranslate"><span class="pre">-f</span></code>判断输入内容是否是一个普通文件(不是目录和设备文件);<code class="docutils literal notranslate"><span class="pre">-d</span></code>判断输入内容是否是一个目录;<code class="docutils literal notranslate"><span class="pre">-r/w/x</span></code>判断输入内容是否可读/写/执行;<code class="docutils literal notranslate"><span class="pre">-c/b</span></code>文件是否为字符设备/块设备文件;<code class="docutils literal notranslate"><span class="pre">-s</span></code>文件是否不为空(文件大小是否不为0);<code class="docutils literal notranslate"><span class="pre">-e</span></code>文件或目录是否存在，<code class="docutils literal notranslate"><span class="pre">-h</span></code>文件是否为软链接；<code class="docutils literal notranslate"><span class="pre">-n</span></code>检测字符串长度是否不为 0，不为 0 返回 true。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="o">-</span><span class="n">f</span> <span class="n">test</span><span class="o">.</span><span class="n">sh</span> <span class="p">]</span> <span class="o">&amp;&amp;</span> <span class="n">echo</span> <span class="s2">&quot;是文件&quot;</span> <span class="c1">#当前路径下有该文件，两个命令都执行。</span>
+<span class="p">[</span> <span class="o">-</span><span class="n">f</span> <span class="o">/</span><span class="n">root</span><span class="o">/</span><span class="n">lspci</span><span class="o">.</span><span class="n">txt</span> <span class="p">]</span> <span class="o">||</span> <span class="n">echo</span> <span class="s2">&quot;绝对路径&quot;</span> <span class="c1">#该路径下有该文件，只执行前面的命令。</span>
+<span class="p">[</span> <span class="o">-</span><span class="n">f</span> <span class="n">lspci</span><span class="o">.</span><span class="n">txt</span> <span class="p">]</span> <span class="o">||</span> <span class="n">echo</span> <span class="s2">&quot;当前路径&quot;</span> <span class="c1">#当前路径下无该文件，执行后面的命令。</span>
+</pre></div>
+</div>
+<ul>
+<li><p>数值操作符：<code class="docutils literal notranslate"><span class="pre">-eq</span></code>相等;<code class="docutils literal notranslate"><span class="pre">-gt</span></code>大于;<code class="docutils literal notranslate"><span class="pre">-ge</span></code>大于等于;<code class="docutils literal notranslate"><span class="pre">-lt</span></code>小于;<code class="docutils literal notranslate"><span class="pre">-le</span></code>小于等于;<code class="docutils literal notranslate"><span class="pre">-ne</span></code>不等于</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">n1</span> <span class="pre">-eq</span> <span class="pre">n2</span> <span class="pre">]</span></code>：n1是否等于n2</p></li>
+</ul>
+</li>
+<li><p>字符串运算符：<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">str1</span> <span class="pre">==</span> <span class="pre">str2</span> <span class="pre">]</span></code>str1和str2字符串内容一致;<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">str1</span> <span class="pre">!=</span> <span class="pre">str2</span> <span class="pre">]</span></code>str1和str2字符串内容不一致;<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">-z</span> <span class="pre">str1</span> <span class="pre">]</span></code>检查字符串长度是否为0;<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">-n</span> <span class="pre">str1</span> <span class="pre">]</span></code>检查字符串长度是否不为0;<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">str</span> <span class="pre">]</span></code>检查字符串是否不为空。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="n">a</span> <span class="o">==</span> <span class="n">a</span> <span class="p">]</span>
+<span class="n">echo</span> <span class="err">$?</span>     <span class="c1">#执行成功，返回状态值为0</span>
+<span class="p">[</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">a</span> <span class="p">]</span>
+<span class="n">echo</span> <span class="err">$?</span>     <span class="c1">#执行失败，返回状态值为1</span>
+</pre></div>
+</div>
+</li>
+<li><p>逻辑运算符：<code class="docutils literal notranslate"><span class="pre">-a</span></code>条件同时成立;<code class="docutils literal notranslate"><span class="pre">-o</span></code>条件任何一个成立;<code class="docutils literal notranslate"><span class="pre">!</span></code>取反</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="err">$</span><span class="n">a</span> <span class="o">-</span><span class="n">lt</span> <span class="mi">20</span> <span class="o">-</span><span class="n">a</span> <span class="err">$</span><span class="n">b</span> <span class="o">-</span><span class="n">gt</span> <span class="mi">100</span> <span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>计算表达式：</p>
+<ul class="simple">
+<li><p>格式一：<code class="docutils literal notranslate"><span class="pre">$((计算表达式))</span></code> 只能用+-x/%和()运算符，并且只能做整数运算，表达式范围内，空格不限制。</p></li>
+<li><p>格式二：<code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">计算表达式</span></code> 表达式必须是一个整体，中间不能出现空格的等特殊字符串。</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id6">
+<h3>4.3. 数组操作<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>定义</strong>：用括号来表示数组,数组元素用“空格”符号分割开.定义数组的语法格式： array_name=(value1 … valuen)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#单行定义</span>
+<span class="n">li</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span> <span class="s2">&quot;a&quot;</span> <span class="s2">&quot;b&quot;</span><span class="p">)</span>
+<span class="c1">#多行定义</span>
+<span class="n">li1</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span>
+<span class="s2">&quot;a&quot;</span>
+<span class="s2">&quot;b&quot;</span>
+<span class="p">)</span>
+<span class="c1">#单元素定义，可以不使用连续下标，且下标的范围没有限制。</span>
+<span class="n">li3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;f&quot;</span>
+<span class="n">li3</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+<span class="c1">#命令定义</span>
+<span class="n">li4</span><span class="o">=</span><span class="p">(</span><span class="err">$</span><span class="p">(</span><span class="n">ls</span> <span class="o">/</span><span class="n">opt</span><span class="p">))</span>  <span class="c1">#将该目录下的每一个目录名或文件名作为一个元素</span>
+<span class="n">或</span> <span class="n">li4</span><span class="o">=</span><span class="p">(</span><span class="err">`</span><span class="n">ls</span> <span class="o">/</span><span class="n">opt</span><span class="err">`</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>注：bash支持一维数组(不支持多维数组)，数组元素用空格符号分割开。</p></li>
+</ul>
+</li>
+<li><p><strong>数组信息查看</strong></p>
+<ul>
+<li><p><strong>基于索引找内容</strong>：<code class="docutils literal notranslate"><span class="pre">${array_name[index]}</span></code>,中括号中不能为空，会报错;不填索引和中括号默认只读取第一个元素。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="err">$</span><span class="p">{</span><span class="n">li</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>   <span class="c1">#打印索引为1的元素</span>
+<span class="n">echo</span> <span class="err">$</span><span class="p">{</span><span class="n">li</span><span class="p">[</span><span class="o">@</span><span class="p">]}</span><span class="n">或echo</span> <span class="err">$</span><span class="p">{</span><span class="n">li</span><span class="p">[</span><span class="o">*</span><span class="p">]}</span>   <span class="c1">#打印所有元素</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>基于内容找索引</strong>：<code class="docutils literal notranslate"><span class="pre">${!li[*]}</span></code>或<code class="docutils literal notranslate"><span class="pre">${!li[&#64;]}</span></code> 只能获取数组的所有索引。</p></li>
+<li><p><strong>获取长度</strong>：<code class="docutils literal notranslate"><span class="pre">${#array_name[index]}</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">li</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span> <span class="s2">&quot;qqcde&quot;</span> <span class="s2">&quot;fgh&quot;</span><span class="p">)</span>
+<span class="n">echo</span> <span class="err">$</span><span class="p">{</span><span class="c1">#li[1]}  #获取索引为1的元素的长度</span>
+<span class="n">echo</span> <span class="err">$</span><span class="p">{</span><span class="c1">#li[@]}  #获取所有元素的个数</span>
+<span class="n">echo</span> <span class="err">$</span><span class="p">{</span><span class="c1">#li[*]}  #获取所有元素的个数</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>合并数组</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">newli=(${li1[*]</span> <span class="pre">${li2[*]}})</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>数组的删改查</strong></p>
+<ul>
+<li><p><strong>获取元素</strong>：分为单元素获取，和元素部分内容获取</p>
+<ul>
+<li><p>${array_name[index]}：单元素获取</p></li>
+<li><p>${array_name[index]:pos :length} ：元素部分内容获取</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">li</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;abc&quot;</span> <span class="s2">&quot;qqcde&quot;</span> <span class="s2">&quot;fgh&quot;</span><span class="p">)</span>
+<span class="n">echo</span> <span class="err">$</span><span class="p">{</span><span class="n">li</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">}</span>  <span class="c1">#打印结果为qcd</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>更改元素</strong>：分为元素内容替换和元素部分内容替换</p>
+<ul class="simple">
+<li><p>元素内容替换：<code class="docutils literal notranslate"><span class="pre">array_name[index]=值</span></code></p></li>
+<li><p>元素部分内容替换：<code class="docutils literal notranslate"><span class="pre">${array_name[index]/old/nes}</span></code></p></li>
+</ul>
+</li>
+<li><p><strong>删除数组</strong>：分为删除单元素和删除整个数组</p>
+<ul class="simple">
+<li><p>删除单元素：<code class="docutils literal notranslate"><span class="pre">unset</span> <span class="pre">array_name[index]</span></code></p></li>
+<li><p>删除整个数组：<code class="docutils literal notranslate"><span class="pre">unset</span> <span class="pre">array_name</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="linxu">
+<h3>4.4. linxu常见符号<a class="headerlink" href="#linxu" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&amp;</span></code>：将一个命令从前台转到后台执行。</p>
+<ul>
+<li><p>语法：<code class="docutils literal notranslate"><span class="pre">命令</span> <span class="pre">&amp;</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sleep</span> <span class="mi">4</span> <span class="c1">#界面卡住4秒后消失</span>
+<span class="n">sleep</span> <span class="mi">4</span> <span class="o">&amp;</span> <span class="c1">#后台执行，界面不会卡住</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>信息符号：<code class="docutils literal notranslate"><span class="pre">1</span></code>表示正确输出的信息 <code class="docutils literal notranslate"><span class="pre">2</span></code>表示错误输出的信息 <code class="docutils literal notranslate"><span class="pre">2&gt;&amp;1</span></code>表示所有输出的信息</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>4.5. 简单流程控制<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>if语句</strong>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#单分支</span>
+<span class="k">if</span> <span class="p">[</span> <span class="n">条件</span> <span class="p">]</span>
+<span class="n">then</span>
+	<span class="n">指令</span>
+<span class="n">fi</span>
+
+<span class="c1">#多分支</span>
+<span class="k">if</span> <span class="p">[</span> <span class="n">条件</span> <span class="p">]</span>
+<span class="n">then</span>
+	<span class="n">指令1</span>
+<span class="k">elif</span> <span class="p">[</span> <span class="n">条件2</span> <span class="p">]</span>
+<span class="n">then</span>
+	<span class="n">指令2</span>
+<span class="k">elif</span> <span class="p">[</span> <span class="n">条件n</span> <span class="p">]</span>
+<span class="n">then</span>
+	<span class="n">指令n</span>
+<span class="k">else</span>
+	<span class="n">指令3</span>
+<span class="n">fi</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>case语句</strong>：变量在值1时执行指令1….</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">case</span> <span class="n">变量名</span> <span class="ow">in</span>
+	<span class="n">值1</span><span class="p">)</span>
+		<span class="n">指令1</span>
+		<span class="p">;;</span>
+	<span class="n">值n</span><span class="p">)</span>
+		<span class="n">指令n</span>
+		<span class="p">;;</span>
+<span class="n">esac</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>循环语句</strong></p>
+<ul>
+<li><p><strong>for语句</strong>：<code class="docutils literal notranslate"><span class="pre">seq</span> <span class="pre">n1</span> <span class="pre">n2</span></code>用于生成从n1到n2之间的所有整数</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 形式一</span>
+<span class="k">for</span> <span class="n">值</span> <span class="ow">in</span> <span class="n">列表</span>
+<span class="n">do</span>
+	<span class="n">执行语句</span>
+<span class="n">done</span>
+
+<span class="c1"># 形式二</span>
+<span class="k">for</span> <span class="p">((</span> <span class="n">初始值</span><span class="p">;</span><span class="n">限制值</span><span class="p">;</span><span class="n">执行步阶</span><span class="p">))</span>
+<span class="n">do</span>
+	<span class="n">执行语句</span>
+<span class="n">done</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>while语句</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 条件的类型：命令，[[ 字符串表达式 ]]，((数字表达式))</span>
+<span class="k">while</span> <span class="n">条件</span>
+<span class="n">do</span>
+	<span class="n">执行语句</span>
+<span class="n">done</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>until语句</strong>：直到条件为真时退出循环</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">#条件类型：命令，[[ 字符串表达式 ]]，((数字表达式))</span>
+<span class="n">until</span> <span class="n">条件</span>
+<span class="n">do</span>
+	<span class="n">执行语句</span>
+<span class="n">done</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>select in语句</strong>：会显示出带编号的seq选项，输入不同编号执行不同功能。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">select</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">seq</span>
+<span class="n">do</span>
+	<span class="n">action</span>
+<span class="n">done</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><strong>死循环</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 一</span>
+<span class="k">for</span> <span class="p">((;;))</span>
+<span class="o">...</span>
+
+<span class="c1"># 二</span>
+<span class="k">while</span> <span class="p">:</span>
+<span class="o">...</span>
+
+<span class="c1"># 三</span>
+<span class="k">while</span> <span class="n">true</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>循环退出：<code class="docutils literal notranslate"><span class="pre">break</span></code>跳出所有循环;<code class="docutils literal notranslate"><span class="pre">break</span> <span class="pre">n</span></code>跳出第n个循环(由内向外);<code class="docutils literal notranslate"><span class="pre">continue</span></code>跳出当前循环;<code class="docutils literal notranslate"><span class="pre">exit</span></code>退出当前程序</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id8">
+<h3>4.6. 函数<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>定义</strong>：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span> <span class="n">function</span> <span class="p">]</span> <span class="n">funname</span><span class="p">()</span> <span class="p">{</span>
+<span class="n">command1</span>
+<span class="o">...</span>
+<span class="p">}</span> 
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">return</span></code></p>
+<ol class="simple">
+<li><p>return 的作用是退出当前函数，不退出整个脚本</p></li>
+<li><p>函数中return 后面的命令一概不执行</p></li>
+<li><p>return的值可以在函数刚执行结束的时候，用echo $? 获取</p></li>
+<li><p>return返回是有限制的,最大返回255,超过255,则从0开始计算</p></li>
+<li><p>exit代表退出整个脚本</p></li>
+<li><p>return和exit的返回值都能用echo $?获取</p></li>
+</ol>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<hr class="docutils" />
+<section id="set-e">
+<h2>5. set -e<a class="headerlink" href="#set-e" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">-e</span></code>：当命令以非零状态退出时，则退出shell。主要作用是，当脚本执行出现意料之外的情况时，立即退出，避免错误被忽略，导致最终结果不正确。</p>
+<ul>
+<li><p>当命令的返回值为非零状态时，则立即退出脚本的执行。</p></li>
+<li><p>作用范围只限于脚本执行的当前进行，不作用于其创建的子进程。</p>
+<ul>
+<li><p>在当前脚本运行其它脚本，当前脚本中的set -e 不会作用于运行的其它脚本（不是同一个进程了，如果用.或source执行其它脚本，因为是同一个进程，该脚本中的set -e仍然会对使用.或source执行的脚本生效 ）。</p></li>
+</ul>
+</li>
+<li><p>另外，当想根据命令执行的返回值，输出对应的log时，最好不要采用set -e选项，而是通过配合exit 命令来达到输出log并退出执行的目的。</p></li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="expect">
+<h2>6. expect<a class="headerlink" href="#expect" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">expect</span></code>：expect是一个免费的编程工具，用来实现自动的交互式任务，而无需人为干预。说白了expect就是一套用来实现自动交互功能的软件需要自行安装。</p>
+<ul>
+<li><p>在使用expect时，以下为常用命令：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">spawn</span>	<span class="c1"># 启动新的进程</span>
+<span class="n">expect</span>	<span class="c1"># 从进程接收字符串</span>
+<span class="n">send</span>	<span class="c1"># 用于向进程发送字符串</span>
+<span class="nb">set</span>	 	<span class="c1"># 定义变量</span>
+<span class="nb">set</span> <span class="n">timeout</span>		<span class="c1"># 设置超时时间</span>
+<span class="n">exp_continue</span>	<span class="c1"># 相当于其他语言的continue，此处用于判断语句，在此处重新进行判断</span>
+<span class="n">expect</span> <span class="n">eof</span>		<span class="c1"># 表示结束交互，返回原终端所在位置。</span>
+<span class="n">interact</span>	<span class="c1"># 与expect eof作用类似，但结束交互后，所处位置为脚本内最后所在位置</span>
+<span class="n">exit</span>	<span class="c1"># 退出expect脚本</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">spawn</span></code>命令用来启动新的进程，spawn后的expect和send命令都是和使用spawn启动的新进程进行交互。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expect</span></code>通常用来等待一个进程的反馈，我们根据进程的反馈，再使用send命令发送对应的交互命令。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">send</span></code>命令接收一个字符串参数，并将该参数发送到进程。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interact</span></code>命令用的其实不是很多，一般情况下使用spawn、expect和send和命令就可以很好的完成我们的任务；但在一些特殊场合下还是需要使用interact命令的，interact命令主要用于退出自动化，进入人工交互。比如我们使用spawn、send和expect命令完成了ftp登陆主机，执行下载文件任务，但是我们希望在文件下载结束以后，仍然可以停留在ftp命令行状态，以便手动的执行后续命令，此时使用interact命令就可以很好的完成这个任务。</p></li>
+</ul>
+</li>
+<li><p>expect自动应答的基本步骤：</p>
+<ol class="simple">
+<li><p>第一步: 运行一个程序或命令=&gt;  spawn 命令信息</p></li>
+<li><p>第二步: 识别产生信息关键字=&gt;  expect 捕获关键字   {send  应答信息}</p></li>
+<li><p>第三步: 根据识别关键做处理=&gt;  send  应答信息</p></li>
+</ol>
+</li>
+<li><p>例：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">expect</span> <span class="o">&lt;&lt;-</span><span class="n">EOF</span>         <span class="c1"># 加上&lt;&lt;-EOF.....EOF才能使用shell的变量。</span>
+<span class="n">spawn</span> <span class="n">scp</span> <span class="o">-</span><span class="n">l</span> <span class="err">$</span><span class="mi">1</span> <span class="o">./</span><span class="mi">20</span><span class="n">G</span><span class="o">.</span><span class="n">txt</span> <span class="n">root</span><span class="o">@</span><span class="mf">172.30.22.113</span><span class="p">:</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">dirtest</span><span class="o">/</span><span class="err">$</span><span class="mf">1.</span><span class="n">txt</span>
+<span class="n">expect</span> <span class="s2">&quot;*password:&quot;</span>
+<span class="n">send</span> <span class="s2">&quot;root</span><span class="se">\r</span><span class="s2">&quot;</span>
+<span class="n">expect</span> <span class="s2">&quot;passss&quot;</span>
+<span class="nb">set</span> <span class="n">timeout</span> <span class="mi">200</span>
+<span class="n">expect</span> <span class="n">eof</span>
+<span class="n">EOF</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id9">
+<h2>7. shell脚本内部调用<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>shell脚本中调用另一个脚本的三种方式</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">fork</span></code>: 如果脚本有执行权限的话，path/to/foo.sh。如果没有，sh path/to/foo.sh。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exec</span></code>: exec path/to/foo.sh</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code>: source path/to/foo.sh</p></li>
+</ol>
+<ul class="simple">
+<li><p>区别：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">fork</span></code> 是最普通的, 就是直接在脚本里面用 path/to/foo.sh 来调用 foo.sh 这个脚本，比如如果是 foo.sh 在当前目录下，就是 ./foo.sh。运行的时候 terminal 会新开一个子 Shell 执行脚本 foo.sh（即新开一个进程），子 Shell 执行的时候, 父 Shell 还在。子 Shell 执行完毕后返回父 Shell。 子 Shell 从父 Shell 继承环境变量，但是子 Shell 中的环境变量不会带回父 Shell。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exec</span></code> 与 fork 不同，不需要新开一个子 Shell 来执行被调用的脚本. 被调用的脚本与父脚本在同一个 Shell 内执行。但是使用 exec 调用一个新脚本以后, 父脚本中 exec 行之后的内容就不会再执行了,这是 exec 和 source 的区别。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source</span></code>与 fork 的区别是不新开一个子 Shell 来执行被调用的脚本，而是在同一个 Shell 中执行. 所以被调用的脚本中声明的变量和环境变量, 都可以在主脚本中进行获取和使用。</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id10">
+<h2>8. 内建和外部命令<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>shell命令的执行：shell命令分为 内建命令和外部命令</p>
+<ul>
+<li><p>内建命令（builtin command）是shell解释程序内建的， 由shell直接执行，不需要派生新的进程。</p>
+<ul>
+<li><p>常用的内建命令：<code class="docutils literal notranslate"><span class="pre">.(点命令)</span></code>、<code class="docutils literal notranslate"><span class="pre">bg</span></code>、<code class="docutils literal notranslate"><span class="pre">cd</span></code>、<code class="docutils literal notranslate"><span class="pre">continue</span></code>、<code class="docutils literal notranslate"><span class="pre">echo</span></code>、<code class="docutils literal notranslate"><span class="pre">exec</span></code>、<code class="docutils literal notranslate"><span class="pre">exit</span></code>、<code class="docutils literal notranslate"><span class="pre">export</span></code>、<code class="docutils literal notranslate"><span class="pre">fg</span></code>、<code class="docutils literal notranslate"><span class="pre">jobs</span></code>、<code class="docutils literal notranslate"><span class="pre">pwd</span></code>、<code class="docutils literal notranslate"><span class="pre">read</span></code>、<code class="docutils literal notranslate"><span class="pre">return</span></code>、<code class="docutils literal notranslate"><span class="pre">set</span></code>、<code class="docutils literal notranslate"><span class="pre">shift</span></code>、<code class="docutils literal notranslate"><span class="pre">test</span></code>、<code class="docutils literal notranslate"><span class="pre">times</span></code>、<code class="docutils literal notranslate"><span class="pre">trap</span></code>、<code class="docutils literal notranslate"><span class="pre">umask</span></code>、<code class="docutils literal notranslate"><span class="pre">unset</span></code>、<code class="docutils literal notranslate"><span class="pre">wait</span></code>等</p></li>
+</ul>
+</li>
+<li><p>外部命令分为两种： 二进制代码 或 shell脚本。 shell执行外部命令时，会创建一个新的进程来执行命令。默认shell将等待直到该进程结束。</p>
+<ul>
+<li><p>常用的外部命令：<code class="docutils literal notranslate"><span class="pre">grep</span></code> <code class="docutils literal notranslate"><span class="pre">more</span></code> <code class="docutils literal notranslate"><span class="pre">cat</span></code> <code class="docutils literal notranslate"><span class="pre">mkdir</span></code> <code class="docutils literal notranslate"><span class="pre">rmdir</span></code> <code class="docutils literal notranslate"><span class="pre">ls</span></code>  <code class="docutils literal notranslate"><span class="pre">sort</span></code>  <code class="docutils literal notranslate"><span class="pre">ftp</span></code>  <code class="docutils literal notranslate"><span class="pre">telnet</span></code>  <code class="docutils literal notranslate"><span class="pre">ssh</span></code>   <code class="docutils literal notranslate"><span class="pre">ps</span></code> 等</p></li>
+</ul>
+</li>
+<li><p>Linux能通过fork()调用，创建一个新的进程，fork会创建原有进程的贮存的精确拷贝。</p>
+<ul>
+<li><p>调用fork的进程是父进程，而由fork创建的进程是子进程。shell 外部命令时，父进程通过fork创建了一个和它一模一样的子进程。</p></li>
+<li><p>对于外部二进制命令（/bin 下的都是二进制可执行文件），shell 需要一种机制，把 子进程 转换为 将要执行的命令。Linux调用execve可以实现将子shell “变身为” 外部命令，execve允许一个进程用其他外部命令的可执行代码覆盖自己。总的来说就是： shell 解释器会调用fork 自身的一个拷贝，然后调用 exec 系列函数来执行外部命令， 这样外部命令就取代了先前的子shell。</p></li>
+<li><p>对于脚本，shell解释器会fork一个子进程，子进程会检查脚本的第一行（#!/bin/sh ），找到用来执行脚本的解释程序，然后装入这个解释程序，由它解释执行脚本。解释程序可能有很多种，各种shell（Bash、Korn shell、cshell）等等。  在此解释程序是当前shell的子进程。 如果 这个解释器与当前shell使用的是同一种shell，比如都是bash，他就是当前shell的子shell。 脚本中的命令都是在子shell中运行的，不会影响当前shell的环境。</p></li>
+<li><p>使用fork函数得到的 子进程从父进程的继承了整个进程的地址空间，包括：</p>
+<ul>
+<li><p>进程上下文、进程堆栈、内存信息、打开的文件描述符、信号控制设置、进程优先级、进程组号、当前工作目录、根目录、资源限制、控制终端等。</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id11">
+<h2>9. shell中的括号<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h2>
+<section id="id12">
+<h3>9.1. 圆括号<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><strong>单圆括号</strong></p>
+<ul>
+<li><p>命令组：括号中的命令将会新开一个子shell顺序执行，所以括号中的变量不能够被脚本余下的部分使用。括号中多个命令之间用分号隔开，最后一个命令可以没有分号，各命令和括号之间不必有空格；</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">ls</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="p">;</span><span class="n">cat</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">passwd</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p>命令替换：等同于cmd，shell扫描一遍命令行，发现了（cmd）结构，便将(cmd)中的cmd执行一次，得到其标准输出，再将此输出放到原来命令。有些shell不支持，如tcsh；</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">a</span><span class="o">=</span><span class="p">(</span><span class="n">command</span><span class="p">),</span> <span class="n">等同于a</span><span class="o">=</span><span class="err">`</span><span class="n">command</span><span class="err">`</span><span class="p">,</span><span class="n">得到命令输出赋值给变量a</span>
+<span class="n">a</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">command</span><span class="p">),</span><span class="n">等同于a</span><span class="o">=</span><span class="p">(</span><span class="err">`</span><span class="n">command</span><span class="err">`</span><span class="p">)</span><span class="n">得到的命令输出为数组赋值给a</span>
+</pre></div>
+</div>
+</li>
+<li><p>用于初始化数组：如：array=(a b c d)。</p></li>
+</ul>
+</li>
+<li><p><strong>双圆括号</strong></p>
+<ul class="simple">
+<li><p>整数扩展：这种扩展计算是整数型的计算，不支持浮点型。</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">((exp))</span></code>结构扩展并计算一个算术表达式的值，如果表达式的结果为0，那么返回的退出状态码为1，或者 是”假”；而一个非零值的表达式所返回的退出状态码将为0，或者是”true”。若是逻辑判断，表达式exp为真则为0,假则为1；</p></li>
+</ul>
+</li>
+<li><p>只要括号中的运算符、表达式符合C语言运算规则，都可用在$((exp))中，甚至是三目运算符。作不同进位(如二进制、八进制、十六进制)运算时，输出结果全都自动转化成了十进制。如：<code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">$((16#5f))</span></code> 结果为95 (16进位转十进制)；</p></li>
+<li><p>单纯用 <code class="docutils literal notranslate"><span class="pre">((</span> <span class="pre">))</span></code> 也可重定义变量值，比如 <code class="docutils literal notranslate"><span class="pre">a=5;</span> <span class="pre">((a++))</span></code> 可将 $a 重定义为6；</p></li>
+<li><p>常用于算术运算比较，双括号中的变量可以不使用符号前缀。括号内支持多个表达式用逗号分开。只要括号中的表达式符合C语言运算规则。比如可以直接使用<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">((i=0;i&lt;5;i++))</span></code>,如果不使用双括号,则为<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">$(seq</span> <span class="pre">0</span> <span class="pre">4)</span></code>或者<code class="docutils literal notranslate"><span class="pre">for</span> <span class="pre">i</span> <span class="pre">in</span> <span class="pre">{0..4}</span></code>。再如可以直接使用<code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">((i&lt;5))</span></code>, 如果不使用双括号, 则为<code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">[</span> <span class="pre">$i</span> <span class="pre">-lt</span> <span class="pre">5</span> <span class="pre">]</span></code>。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id13">
+<h3>9.2. 方括号<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>单方括号</strong></p>
+<ul>
+<li><p>bash 的内部命令，<code class="docutils literal notranslate"><span class="pre">[</span></code>和<code class="docutils literal notranslate"><span class="pre">test</span></code>是等同的。如果我们不用绝对路径指明，通常我们用的都是bash自带的命令。<code class="docutils literal notranslate"><span class="pre">if/test</span></code>结构中的<strong>左中括号是调用test的命令标识</strong>，<strong>右中括号是关闭条件判断的</strong>。这个命令把它的参数作为比较表达式或者作为文件测试，并且根据比较的结果来返回一个退出状态码。if/test结构中并不是必须右中括号，但是新版的Bash中要求必须这样。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span></code>和<code class="docutils literal notranslate"><span class="pre">[]</span></code>中可用的比较运算符只有<code class="docutils literal notranslate"><span class="pre">==</span></code>和<code class="docutils literal notranslate"><span class="pre">!=</span></code>，两者都是用于<strong>字符串比较</strong>的，不可用于整数比较，<strong>整数比较只能使用-eq，-gt</strong>这种形式。无论是<strong>字符串比较还是整数比较都不支持大于号小于号</strong>。如果实在想用，对于字符串比较可以使用转义形式，如果比较”ab”和”bc”：[ ab &lt; bc ]，结果为真，也就是返回状态为0。<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]</span></code>中的逻辑与和逻辑或使用-a 和-o 表示。</p></li>
+<li><p>字符范围。用作正则表达式的一部分，描述一个匹配的字符范围。作为test用途的中括号内不能使用正则。</p></li>
+<li><p>在一个array 结构的上下文中，中括号用来引用数组中每个元素的编号。</p></li>
+</ul>
+</li>
+<li><p><strong>双方括号</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">[[</span></code>是 bash 程序语言的关键字。并不是一个命令，<code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">]]</span></code> 结构比<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]</span></code>结构更加通用。在<code class="docutils literal notranslate"><span class="pre">[[</span></code>和<code class="docutils literal notranslate"><span class="pre">]]</span></code>之间所有的字符都不会发生文件名扩展或者单词分割，但是会发生参数扩展和命令替换。</p></li>
+<li><p>支持字符串的模式匹配，使用<code class="docutils literal notranslate"><span class="pre">=~</span></code>操作符时甚至支持shell的正则表达式。字符串比较时可以把右边的作为一个模式，而不仅仅是一个字符串，比如<code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">hello</span> <span class="pre">==</span> <span class="pre">hell?</span> <span class="pre">]]</span></code>，结果为真。[[ ]] 中匹配字符串或通配符，不需要引号。</p></li>
+<li><p>使用<code class="docutils literal notranslate"><span class="pre">[[</span> <span class="pre">...</span> <span class="pre">]]</span></code>条件判断结构，而不是[ … ]，能够防止脚本中的许多逻辑错误。比如，&amp;&amp;、||、&lt;和&gt; 操作符能够正常存在于[[ ]]条件判断结构中，但是如果出现在[ ]结构中的话，会报错。比如可以直接使用if [[ $a != 1 &amp;&amp; $a != 2 ]], 如果不适用双括号, 则为if [ $a -ne 1] &amp;&amp; [ $a != 2 ]或者if [ $a -ne 1 -a $a != 2 ]。</p></li>
+<li><p>bash把双中括号中的表达式看作一个单独的元素，并返回一个退出状态码。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id14">
+<h3>9.3. 花括号<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>大括号拓展</strong>。(通配(globbing))将对大括号中的文件名做扩展。在大括号中，不允许有空白，除非这个空白被引用或转义。</p>
+<ul>
+<li><p>第一种：对大括号中的以逗号分割的文件列表进行拓展。如 touch {a,b}.txt 结果为a.txt b.txt；</p></li>
+<li><p>第二种：对大括号中以点点（..）分割的顺序文件列表起拓展作用，如：touch {a..d}.txt 结果为a.txt b.txt c.txt d.txt。</p></li>
+</ul>
+</li>
+<li><p><strong>代码块</strong>，又被称为内部组，这个结构事实上创建了一个匿名函数 。与小括号中的命令不同，大括号内的命令不会新开一个子shell运行，即脚本余下部分仍可使用括号内变量。括号内的命令间用分号隔开，最后一个也必须有分号。{}的第一个命令和左括号之间必须要有一个空格。</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3>9.4. $()和``命令替换<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">$()</span></code>和<code class="docutils literal notranslate"><span class="pre">``</span></code>表示命令的替换</p></li>
+<li><p>原理：将对<code class="docutils literal notranslate"><span class="pre">``</span></code>或<code class="docutils literal notranslate"><span class="pre">$()</span></code>里的内容先进行执行，然后将执行的结果代换到当前命令中，在shell中fork一个子进程区做他们括起来的命令,然后在返回父进程。</p></li>
+<li><p>在编写脚本过程中尽量使用$()来进行命令替换，理由如下：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">``</span></code>很容易与<code class="docutils literal notranslate"><span class="pre">''</span></code>搞混乱;</p></li>
+<li><p>在多层次的复合替换中，<code class="docutils literal notranslate"><span class="pre">``</span></code>必须要额外的转义字符处理（反斜线），而<code class="docutils literal notranslate"><span class="pre">$(</span> <span class="pre">)</span></code>比较直观;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">$()</span></code>的弊端是，并不是所有的类unix系统都支持这种方式，但<code class="docutils literal notranslate"><span class="pre">``</span></code>是肯定支持的。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id16">
+<h3>9.5. ${}变量替换<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>含义：</p>
+<ul>
+<li><p>一般情况下，<code class="docutils literal notranslate"><span class="pre">$var</span></code>与<code class="docutils literal notranslate"><span class="pre">${var}</span></code>是没有区别的，但是用<code class="docutils literal notranslate"><span class="pre">${}</span></code>会比较精确的界定变量名称的范围。</p></li>
+</ul>
+</li>
+<li><p>变量替换</p>
+<ul>
+<li><p>${var}：变量本来的值</p></li>
+<li><p>${var:-word}：如果变量 var 为空或已被删除(unset)，那么返回 word，但不改变 var 的值；</p></li>
+<li><p>${var:+word}	如果变量 var 被定义，那么返回 word，但不改变 var 的值；</p></li>
+<li><p>${var:=word}：如果变量 var 为空或已被删除(unset)，那么返回 word，并将 var 的值设置为 word。是一种赋值默认值的常见做法；</p></li>
+<li><p>${var:?word}：如果变量 var 为空或已被删除(unset)，那么将消息word 送到标准错误输出，可利用此特性来检查是否设置了变量的值。若此替换出现在Shell脚本中，那么脚本将停止运行。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">#</span></code>、<code class="docutils literal notranslate"><span class="pre">##</span></code>、<code class="docutils literal notranslate"><span class="pre">%</span></code>、<code class="docutils literal notranslate"><span class="pre">%%</span></code>在<code class="docutils literal notranslate"><span class="pre">${}</span></code>中的使用</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">file=/dir1/dir2/dir3/my.file.txt</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file#*/}</span></code>：删掉第一个 <code class="docutils literal notranslate"><span class="pre">/</span></code> 及其左边的字符串：dir1/dir2/dir3/my.file.txt</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file##*/}</span></code>：删掉最后一个 <code class="docutils literal notranslate"><span class="pre">/</span></code>  及其左边的字符串：my.file.txt</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file#*.}</span></code>：删掉第一个 <code class="docutils literal notranslate"><span class="pre">.</span></code>  及其左边的字符串：file.txt</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file##*.}</span></code>：删掉最后一个 <code class="docutils literal notranslate"><span class="pre">.</span></code>  及其左边的字符串：txt</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file%/*}</span></code>：删掉最后一个  <code class="docutils literal notranslate"><span class="pre">/</span></code>  及其右边的字符串：/dir1/dir2/dir3</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file%%/*}</span></code>：删掉第一个 <code class="docutils literal notranslate"><span class="pre">/</span></code>  及其右边的字符串：(空值)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file%.*}</span></code>：删掉最后一个  <code class="docutils literal notranslate"><span class="pre">.</span></code>  及其右边的字符串：/dir1/dir2/dir3/my.file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">${file%%.*}</span></code>：删掉第一个  <code class="docutils literal notranslate"><span class="pre">.</span></code>   及其右边的字符串：/dir1/dir2/dir3/</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id17">
+<h2>10. $[]和$(())整数运算<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h2>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id18">
+<h2>11. shell中的常见使用<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h2>
+<section id="id19">
+<h3>11.1. <code class="docutils literal notranslate"><span class="pre">=～</span></code><a class="headerlink" href="#id19" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">=～</span></code>：在shell中，<code class="docutils literal notranslate"><span class="pre">=~</span></code>表示正则表达式匹配。当使用<code class="docutils literal notranslate"><span class="pre">=~</span></code>时，左操作数是一个字符串，右操作数是一个正则表达式。</p>
+<ul>
+<li><p>注：要在 <code class="docutils literal notranslate"><span class="pre">[[]]</span></code> 中使用</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">str</span><span class="o">=</span><span class="s2">&quot;apple&quot;</span>
+<span class="k">if</span> <span class="p">[[</span> <span class="err">$</span><span class="nb">str</span> <span class="o">=~</span> <span class="n">a</span><span class="o">.</span><span class="n">p</span> <span class="p">]];</span> <span class="n">then</span>
+	<span class="n">echo</span> <span class="s2">&quot;Match found!&quot;</span>
+<span class="k">else</span>
+	<span class="n">echo</span> <span class="s2">&quot;Match not found!&quot;</span>
+<span class="n">fi</span>
+<span class="c1"># 以上代码中，&quot;a.p&quot;是一个正则表达式，可以匹配字符串&quot;apple&quot;。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="while-read">
+<h3>11.2. while read<a class="headerlink" href="#while-read" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>依次将文件file中的每一行内容读取出来赋值给变量var，再进行do后面的语句</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> <span class="n">read</span> <span class="n">var</span>
+<span class="n">do</span>
+<span class="o">...</span>
+<span class="n">done</span> <span class="o">&lt;</span> <span class="o">&lt;</span><span class="n">file</span>
+<span class="n">或done</span> <span class="o">&lt;</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">commond</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="OsBase.html" class="btn btn-neutral float-left" title="操作系统基础" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Systemd.html" class="btn btn-neutral float-right" title="systemd服务" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, wl.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>systemd服务 &mdash; MD 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ZStack" href="ZStack.html" />
+    <link rel="prev" title="shell脚本" href="ShellScript.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Welcome to Py’s documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CommonCmd.html">常用命令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CommonProblem.html">常见问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OsBase.html">操作系统基础</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShellScript.html">shell脚本</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">systemd服务</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#init">1. init进程</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#systemv-system-v-release-1-2-3-4">2. SystemV [ System V Release 1/2/3/4]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">3. Systemd</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">3.1. systemd启动过程：</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unit">3.2. Unit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">3.3. 系统管理</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#systemd-timer">4. systemd timer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ZStack.html">ZStack</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Welcome to Py’s documentation!</a></li>
+      <li class="breadcrumb-item active">systemd服务</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/MdDir/Systemd.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="systemd">
+<h1>systemd服务<a class="headerlink" href="#systemd" title="Link to this heading">¶</a></h1>
+<section id="init">
+<h2>1. init进程<a class="headerlink" href="#init" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Linux下，init主要有三个实现版本：</p>
+<ol class="simple">
+<li><p>System V,传统的init;</p></li>
+<li><p>Upstart，Ubuntu后期针对sys-v的一个改进实现版本;</p></li>
+<li><p>systemd，是一套中央化系统及设置管理程序，包括有守护进程、程序库以及应用软件,兼容sys-v。现代大部分桌面版都使用此实现。</p></li>
+</ol>
+</li>
+<li><p>init是内核启动的第一个用户空间进程，主要负责启动、终止系统中的基础服务进程。</p></li>
+<li><p>Linux 系统在启动过程中，内核完成初始化以后，由内核第一个启动的程序便是 init 程序，路径为 <code class="docutils literal notranslate"><span class="pre">/sbin/init</span></code>，其 PID 为1，它为系统里所有进程的“祖先”，Linux 中所有的进程都由 init 进程直接或间接进行创建并运行，init 进程以守护进程的方式存在，负责组织与运行系统的相关初始化工作，让系统进入定义好的运行模式，如命令行模式或图形界面模式。</p></li>
+</ul>
+</section>
+<section id="systemv-system-v-release-1-2-3-4">
+<h2>2. SystemV [ System V Release 1/2/3/4]<a class="headerlink" href="#systemv-system-v-release-1-2-3-4" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>SystemV启动过程：</p>
+<ul class="simple">
+<li><p>SystemV init –&gt; /etc/inittab/–&gt; /etc/init.d/</p></li>
+</ul>
+</li>
+<li><p>SystemV  init  进程只是执行启动脚本，不管其他事情。脚本需要自己处理各种情况，这往往使得脚本变得很长</p></li>
+<li><p>SystemV  init 依赖一个特定的启动顺序每次只能启动执行一个启动任务。这些都是通过一个核心配置文件<code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code>和一组启动脚本<code class="docutils literal notranslate"><span class="pre">/etc/init.d/</span></code>以及符号链接集执行的，本质上为系统提供了合理的启动顺序，支持不同的运行级别。</p></li>
+<li><p>服务脚本文件存放在目录 <code class="docutils literal notranslate"><span class="pre">/etc/init.d</span> </code>下 或者目录 <code class="docutils literal notranslate"><span class="pre">/etc/rc.d/init.d/</span></code> 下，可以使用 <code class="docutils literal notranslate"><span class="pre">/etc/init.d/daemon</span> <span class="pre">[start|stop|restart|reload|status]</span></code> 方式来管理服务。init 程序的配置文件存放在目录 <code class="docutils literal notranslate"><span class="pre">/etc/inittab/</span></code> 下，用来设置系统的默认运行级别，init进程运行后首先会读取/etc/inittab文件，根据inittab文件中的内容依次执行。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code>：inittab是一个不可执行的文本文件，它被要求按照固定的格式书写，从而便于init进程识别。inittab的每一行都是一个登记项，它的结构如下：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">label:runlevels</span> <span class="pre">:action</span> <span class="pre">:process</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">label</span></code> : 是每个登记项的标识符，最多为4个字符，用于唯一标识每个登记项，不能重复；</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="err">：</span><span class="n">用来定义缺省的init运行的级别</span>
+<span class="n">si</span><span class="err">：</span><span class="n">是系统初始化的进程</span>
+<span class="n">ln</span><span class="err">：</span><span class="n">其中的n从1</span><span class="o">~</span><span class="mi">6</span><span class="p">,</span><span class="n">指明该进程可以使用的runlevel的级别</span>
+<span class="n">ud</span><span class="err">：</span><span class="n">是升级进程</span>
+<span class="n">ca</span><span class="err">：</span><span class="n">指明当按下Ctrl</span><span class="o">+</span><span class="n">Alt</span><span class="o">+</span><span class="n">Del是运行的进程</span>
+<span class="n">pf</span><span class="err">：</span><span class="n">指当UPS表明断电时运行的进程</span>
+<span class="n">pr</span><span class="err">：</span><span class="n">是在系统真正关闭之前</span><span class="err">，</span><span class="n">UPS发出电源恢复的信号时需要运行的进程</span>
+<span class="n">x</span><span class="err">：</span><span class="n">是将系统转入X终端时需要运行的进程</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runlevels</span></code>: 是系统运行级别，用于指定相应的登记项在哪个运行级别中处理。如果该字段为空， 那么相应的登记项将适用于所有的运行级别。在该字段中，可以同时指定一个或多个运行级别，其中各运行级别分别以数字0.1.2.3.4.5.6表示，且无需对其进行分隔；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">action</span></code> ：表示对应登记项的process在一定条件下所要执行的动作；</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">respawn</span><span class="err">：</span><span class="n">意思就是当后面的要执行的程序终止了</span><span class="err">，</span><span class="n">init进程会自动重启该进程</span><span class="err">。</span>
+<span class="n">wait</span><span class="err">：</span><span class="n">init应该运行这个进程一次</span><span class="err">，</span><span class="n">并等待其结束后再进行下一步操作</span>
+<span class="n">once</span><span class="err">：</span><span class="n">init只运行一次该进程</span>
+<span class="n">boot</span><span class="err">：</span><span class="n">系统地运行该进程</span>
+<span class="n">bootwait</span><span class="err">：</span><span class="n">在系统启动时运行</span><span class="err">，</span><span class="n">init等待进程完成</span>
+<span class="n">ctrlaltdel</span><span class="err">：</span><span class="n">当Ctrl</span><span class="o">+</span><span class="n">Alt</span><span class="o">+</span><span class="n">Del三个键同时按下时运行</span><span class="err">，</span><span class="n">把SIGINT信号发送给init</span>
+<span class="n">sysinit</span><span class="err">：</span><span class="n">在运行boot或bootwait进程之前运行</span>
+<span class="n">powerfail</span><span class="err">：</span><span class="n">当init收到SIGWR信号时运行</span>
+<span class="n">powerokwait</span><span class="err">：</span><span class="n">当收到SIGWD信号且</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">文中</span> <span class="n">的电源状态包含OK时运行</span>
+<span class="n">powerwait</span><span class="err">：</span><span class="n">当收到SIGPWD信号</span><span class="err">，</span><span class="n">并且init等待进程结束时运行</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">process</span></code> : pocess表示所要执行的shell命令。任何合法的shell语法都适用于该字段。</p></li>
+</ul>
+</li>
+<li><p>默认的运行级别在 <code class="docutils literal notranslate"><span class="pre">/etc/inittab</span></code> 文件中定义，当系统以某个运行级别启动时，会运行 <code class="docutils literal notranslate"><span class="pre">/etc/rc.d/rcN.d/</span></code>（其中 N 范围为0~6）目录中所有的脚本，而这些脚本的命名都是Knnxxxxx或Snnxxxxx，对于以 K(kill)开头的文件，系统将终止对应的服务，对于以 S(start)开头的文件，系统将启动对应的服务，nn是数字，数字的大小决定了脚本运行的顺序，最后的xxxxx为脚本的名称（长度任意），这些目录里的文件都是指向init.d目录中脚本的软连接，因为各个运行级别的所需的服务可能存在交集，所以这样能节省硬盘使用空间。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 在 SysV init 中，定义了6个运行级别，分别是：</span>
+<span class="n">runlevel0</span><span class="err">：</span><span class="n">关机</span><span class="err">，</span><span class="n">系统默认运行级别不能设为</span> <span class="mi">0</span><span class="err">，</span><span class="n">否则不能正常启动</span><span class="err">。</span>
+<span class="n">runlevel1</span><span class="err">：</span><span class="n">单用户模式</span><span class="err">，</span><span class="n">仅root</span><span class="err">。</span><span class="n">用于系统维护</span><span class="err">，</span><span class="n">禁止远程登陆</span><span class="err">。</span>
+<span class="n">runlevel2</span><span class="err">：</span><span class="n">多用户状态</span><span class="p">(</span><span class="n">没有NFS</span><span class="p">)</span><span class="err">，</span><span class="n">没有网络连接</span><span class="err">。</span>
+<span class="n">runlevel3</span><span class="err">：</span><span class="n">完全的多用户状态</span><span class="err">（</span><span class="n">有NFS</span><span class="err">），</span><span class="n">登陆后进入控制台命令行模式</span><span class="err">。</span>
+<span class="n">runlevel4</span><span class="err">：</span><span class="n">系统未使用</span><span class="err">，</span><span class="n">保留</span><span class="err">。</span>
+<span class="n">runlevel5</span><span class="err">：</span><span class="n">X11</span> <span class="n">控制台</span><span class="err">，</span><span class="n">登陆后进入图形</span> <span class="n">GUI</span> <span class="n">模式</span><span class="err">。</span>
+<span class="n">runlevel6</span><span class="err">：</span><span class="n">停止linux系统</span><span class="err">，</span><span class="n">并按照</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">inittab默认的登记项重新引导系统</span><span class="err">。</span><span class="n">默认运行级别不能设为</span> <span class="mi">6</span><span class="err">，</span><span class="n">否则不能正常启动</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>SysV init 守护进程是一个基于运行级别的系统，它使用运行级别(单用户、多用户以及其他更多级别)和链接(位于 <code class="docutils literal notranslate"><span class="pre">/etc</span> <span class="pre">/rcN.d/</span></code> 目录中，分别链接到 <code class="docutils literal notranslate"><span class="pre">/etc/init.d</span></code> 中的 init 脚本)来启动和关闭系统服务。SysV启动是线性、顺序的。一个S20的服务必须要等待S19启动完成才能启动，如果一个启动要花很多时间，那么后面的服务就算完全无关，也必须要等待。</p></li>
+<li><p>它的好处是依赖关系简单，任务之间泾渭分明的一个一个启动，即使某个基础服务出了错也便于排查。但也正因为如此，他的启动性能很不好。服务无法并行启动不说，而且只能按照预先规定的顺序启动服务。如果你安装了新的硬件或者新服务，他不提供及时支持的标准方法。</p></li>
+</ul>
+</section>
+<section id="id1">
+<h2>3. Systemd<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>描述：是一个 Linux 系统基础组件的集合，提供了一个系统和服务管理器，运行为 PID 1 并负责启动其它程序。</p></li>
+<li><p>优点：</p>
+<ol class="simple">
+<li><p>采用Socket激活式与总线激活式服务，以提高相互依赖的各服务的并行运行性能;</p></li>
+<li><p>按需启动守护进程（daemon）,只有在某个服务被真正请求的时候才启动它；</p></li>
+<li><p>用Cgroups代替PID来追踪进程，因此即使是两次fork之后生成的守护进程也不会脱离systemd的控制;</p></li>
+<li><p>兼容systemVinit。
+….</p></li>
+</ol>
+</li>
+</ul>
+<section id="id2">
+<h3>3.1. systemd启动过程：<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>systemd –&gt; default.target –&gt; graphical.target….</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">get-default</span></code>：默认target;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">set-default</span> <span class="pre">multi-user.target</span></code>：设置默认target；</p></li>
+<li><p>default.target(<code class="docutils literal notranslate"><span class="pre">/usr/lib/systemd/system/default.target</span></code>)是一个链接文件，指向默认target。</p></li>
+</ul>
+</li>
+<li><p>target：为其他配置单元进行逻辑分组。比如想让系统进入图形化模式，需要运行许多服务和配置命令，这些操作都由一个个的配置单元表示，将所有这些配置单元组合为一个目标(target)，就表示需要将这些配置单元全部执行一遍以便进入目标所代表的系统运行状态。</p></li>
+</ul>
+</section>
+<section id="unit">
+<h3>3.2. Unit<a class="headerlink" href="#unit" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>systemd 开启和监督整个系统是基于 unit 的概念。可以简单理解为 systemd 启动后每次需要执行的服务，每次需要处理的资源，都被抽象为一个配置单元 Unit，保存在一个 Unit 文件里面</p></li>
+<li><p>unit类型：unit表示不同类型的systemd对象，并提供了处理不同单元之间依赖关系的能力,通过配置文件进行标识和配置；Systemd 可以管理的系统资源。不同的资源统称为 unit（单元），unit有11种。</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">-t</span> <span class="pre">help</span></code>：查看unit类型。
+| 序号名 | 资源名称 | 含义 |
+| — | — | — |
+| 1 | service | 系统服务 |
+| 2 | socket | 用于标识进程间通信的socket |
+| 3 | target | 用于模拟实现“运行级别” |
+| 4 | device | 硬件设备 |
+| 5 | mount | 文件系统挂载点 |
+| 6 | automount | 自动挂载点 |
+| 7 | swap | 用于标识swap设备（交换空间） |
+| 8 | timer | 定时器 |
+| 9 | path | 文件或路径 |
+| 10 | slice | 进程组 |
+| 11 | scope | 不是由systemd启动的外部进程 |</p></li>
+</ul>
+</li>
+<li><p>target和运行级别</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span> <span class="pre">/usr/lib/systemd/system/runlevel?.target</span></code>
+| 运行级别 | target | 含义 |
+| — | — | — |
+| 0 | poweroff.target | 关机 |
+| 1 | rescue.target | 单用户模式 |
+| 2 | multi-user.target | 多用用户模式，没有NFS |
+| 3 | multi-user.target | 完整的多用户模式 |
+| 4 | multi-user.target | 未使用 |
+| 5 | graphical.target | 图形界面 |
+| 6 | reboot.target | 重启 |</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">list-dependencies</span> <span class="pre">graphical.target</span></code>：查看graphical.target依赖关系；</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">booup</span></code>：系统启动流程。</p></li>
+</ul>
+</li>
+<li><p>Unit配置文件</p></li>
+<li><p>概述：每一个 Unit 都有一个配置文件，告诉 Systemd 怎么启动这个 Unit。</p></li>
+<li><p>配置文件目录<code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">systemd.unit</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">/usr/lib/systemd/system</span></code>或<code class="docutils literal notranslate"><span class="pre">/lib/systemd</span></code> : 使用包管理器安装的软件的 systemd unit 件实际配置文件的存放位置</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/run/systemd/system</span></code>：在运行时创建的systemd unit 文件。该目录优先于已安装服务单元文件的目录。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/systemd/system</span></code>:优先级最高，由 systemctl 命令创建的 systemd unit 文件以及为扩展服务而添加的 unit 文件都将启用。</p></li>
+</ul>
+</li>
+<li><p>Systemd 默认从目录<code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/</span></code>读取配置文件。里面存放的大部分文件都是链接，指向目录<code class="docutils literal notranslate"><span class="pre">/usr/lib/systemd/system/</span></code>。</p></li>
+<li><p>Service文件</p>
+<ul>
+<li><p>在systemd中一个.service就是一个服务类型的配置单元，同时也代表了一个服务功能。使用<code class="docutils literal notranslate"><span class="pre">sysctemctl</span> <span class="pre">cat</span> <span class="pre">ssh.service</span></code>来查看ssh.service文件内容，该文件就在/lib/systemd/system下.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>    																						<span class="c1"># 主要描述启动顺序与依赖关系</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">OpenBSD</span> <span class="n">Secure</span> <span class="n">Shell</span> <span class="n">server</span>      						<span class="c1"># 一段描述Service的信息</span>
+<span class="n">Documentation</span><span class="o">=</span><span class="n">man</span><span class="p">:</span><span class="n">sshd</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="n">man</span><span class="p">:</span><span class="n">sshd_config</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span> <span class="n">auditd</span><span class="o">.</span><span class="n">service</span>											 <span class="c1"># 表示ssh.service在network.target auditd.service单元之后启动。另外还有一个属性Before，表示当前单元在列出的单元之前启动。After、Before定义了单元之间启动的顺序。</span>
+<span class="n">ConditionPathExists</span><span class="o">=</span><span class="err">!</span><span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_not_to_be_run</span>				<span class="c1"># 表示在后面的路径存在时返回true,这里使用了!非运算符，取反的意思。</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>																					<span class="c1"># 这个区块定义如何启动当前服务</span>
+<span class="n">EnvironmentFile</span><span class="o">=-/</span><span class="n">etc</span><span class="o">/</span><span class="n">default</span><span class="o">/</span><span class="n">ssh</span>										<span class="c1"># 指定当前服务环境参数文件，内部使用键值对定义，可以使用$key读取值，比如后面的$SSHD_OPTS</span>
+<span class="n">ExecStartPre</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">sshd</span> <span class="o">-</span><span class="n">t</span>											<span class="c1"># 定义启动服务前执行的指令</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">sshd</span> <span class="o">-</span><span class="n">D</span> <span class="err">$</span><span class="n">SSHD_OPTS</span>						<span class="c1"># 定义启动程序执行的指令</span>
+<span class="n">ExecReload</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">sshd</span> <span class="o">-</span><span class="n">t</span>											<span class="c1"># 表示重启服务时执行的命令。</span>
+<span class="n">ExecReload</span><span class="o">=/</span><span class="nb">bin</span><span class="o">/</span><span class="n">kill</span> <span class="o">-</span><span class="n">HUP</span> <span class="err">$</span><span class="n">MAINPID</span>
+<span class="n">KillMode</span><span class="o">=</span><span class="n">process</span>															<span class="c1"># 定义 Systemd 如何停止 sshd 服务，process表示当kill sshd服务的时候，仅杀死主进程，子进程还是留着的。control-group（默认值）：当前控制组里面的所有子进程，都会被杀掉；mixed：主进程将收到 SIGTERM 信号，子进程收到 SIGKILL 信号；none：没有进程会被杀掉，只是执行服务的 stop 命令</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">on</span><span class="o">-</span><span class="n">failure</span>															<span class="c1"># 定义了 sshd 退出后，Systemd 的重启方式。on-failure：表示任何意外的失败，就将重启sshd；no（默认值）：退出后不会重启；on-success：只有正常退出时（退出状态码为0），才会重启；on-abnormal：只有被信号终止和超时，才会重启；on-abort：只有在收到没有捕捉到的信号终止时，才会重启；on-watchdog：超时退出，才会重启；always：不管是什么退出原因，总是重启。</span>
+<span class="n">RestartPreventExitStatus</span><span class="o">=</span><span class="mi">255</span>									<span class="c1"># 符合某些退出状态时不要进行重启，该参数的值支持exit code和信号名2种，可写多个，以空格分隔。当退出状态码为255时不重启</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">notify</span>																	<span class="c1"># 定义启动类型。notify，表示启动结束后会发出通知信号，然后 Systemd 再启动其他服务。simple（默认值）：ExecStart字段启动的进程为主进程；forking：ExecStart字段将以fork()方式启动，此时父进程将会退出，子进程将成为主进程；oneshot：类似于simple，但只执行一次，Systemd 会等它执行完，才启动其他服务；dbus：类似于simple，但会等待 D-Bus 信号后启动。</span>
+<span class="n">RuntimeDirectory</span><span class="o">=</span><span class="n">sshd</span>
+<span class="n">RuntimeDirectoryMode</span><span class="o">=</span><span class="mi">0755</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>																	<span class="c1"># 定义如何安装这个配置文件，即怎样做到开机启动</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>									<span class="c1"># 表示该服务所在的Target,systemctl enable sshd.service其实就是将sshd服务的链接放在multi-user.target.wants目录下。同时multi-user.target是系统的默认target，在启动该target的时候，他下面的服务都会开机启动。这也就是只要挂上multi-user.target就能开机启动的原因。</span>
+<span class="n">Alias</span><span class="o">=</span><span class="n">sshd</span><span class="o">.</span><span class="n">service</span> <span class="c1"># 别名，当使用systemctl enable ssh 时，在/etc/systemd/system目录下的链接文件名就为这个。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>在systemd中添加单元</p>
+<ol>
+<li><p><code class="docutils literal notranslate"><span class="pre">vim</span> <span class="pre">/usr/lib/systemd/system/test.service</span></code>：添加一个service单元</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">test</span>
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">root</span><span class="o">/</span><span class="n">test</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">no</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">simple</span>
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span>
+<span class="n">Alias</span><span class="o">=</span><span class="n">test</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">daemon-reload</span></code>：重新加载加载配置。每次修改完.service文件之后都需要重新执行</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">test</span></code>：启动该服务</p></li>
+</ol>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">edit</span> <span class="pre">test</span></code>：修改配置文件。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">enable</span> <span class="pre">test</span></code>：在<code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/</span></code>创建链接文件，指向<code class="docutils literal notranslate"><span class="pre">/usr/lib/systemd/system/</span></code>目录下的配置文件；如果配置文件里面有<code class="docutils literal notranslate"><span class="pre">WantedBy=multi-user.target</span></code>，还会在<code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/multi-user.target.wants</span></code>创建链接文件，实现开机自启。</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">disable</span> <span class="pre">test</span></code>：删除链接文件。</p></li>
+<li><p>target文件</p>
+<ul>
+<li><p>执行<code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">cat</span> <span class="pre">multi-user.target</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">Multi</span><span class="o">-</span><span class="n">User</span> <span class="n">System</span>
+<span class="n">Documentation</span><span class="o">=</span><span class="n">man</span><span class="p">:</span><span class="n">systemd</span><span class="o">.</span><span class="n">special</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">Requires</span><span class="o">=</span><span class="n">basic</span><span class="o">.</span><span class="n">target</span>
+<span class="n">Conflicts</span><span class="o">=</span><span class="n">rescue</span><span class="o">.</span><span class="n">service</span> <span class="n">rescue</span><span class="o">.</span><span class="n">target</span>
+<span class="n">After</span><span class="o">=</span><span class="n">basic</span><span class="o">.</span><span class="n">target</span> <span class="n">rescue</span><span class="o">.</span><span class="n">service</span> <span class="n">rescue</span><span class="o">.</span><span class="n">target</span>
+<span class="n">AllowIsolate</span><span class="o">=</span><span class="n">yes</span>
+</pre></div>
+</div>
+</li>
+<li><p>target文件只是组织一批服务，因此他没有[service]、[mount]等定义启动或者挂载的区块。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Requires</span><span class="err">：</span><span class="n">表示强依赖关系</span><span class="err">，</span><span class="n">即必须要求basic</span><span class="o">.</span><span class="n">target启动</span><span class="err">，</span><span class="n">否则multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target启动失败</span><span class="err">；</span>
+<span class="n">Conflicts</span><span class="err">：</span><span class="n">表示multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target与他们互斥</span><span class="err">，</span><span class="n">不能同时处于multi</span><span class="o">-</span><span class="n">user状态和rescue状态</span><span class="err">；</span>
+<span class="n">After</span><span class="err">：</span><span class="n">表示multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target在basic</span><span class="o">.</span><span class="n">target</span> <span class="n">rescue</span><span class="o">.</span><span class="n">service</span> <span class="n">rescue</span><span class="o">.</span><span class="n">target之后启动</span><span class="err">；</span>
+<span class="n">AllowIsolate</span><span class="err">，</span><span class="n">表示允许使用systemctl</span> <span class="n">isolate命令切换到multi</span><span class="o">-</span><span class="n">user</span><span class="o">.</span><span class="n">target</span><span class="err">。</span>
+<span class="c1"># systemctl isolate multi-user.target：切换target</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>配置文件的状态</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">list-unit-files</span></code>：列出所有配置文件</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">list-unit-files</span> <span class="pre">--type=service</span></code>：列出指定类型的配置文件。</p></li>
+</ul>
+</li>
+<li><p>配置文件的四种状态（state）</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">enabled</span><span class="err">：</span><span class="n">已建立启动链接</span>
+<span class="n">disabled</span><span class="err">：</span><span class="n">未建立启动链接</span>
+<span class="n">static</span><span class="err">：</span><span class="n">该配置文件没有</span><span class="p">[</span><span class="n">insatll</span><span class="p">]</span><span class="n">部分</span><span class="err">（</span><span class="n">无法执行</span><span class="err">），</span><span class="n">只能作为其他配置文件的依赖</span>
+<span class="n">masked</span><span class="err">：</span><span class="n">该配置文件被禁止建立启动链接</span>
+<span class="n">generated</span><span class="err">：</span><span class="n">该单元由其他的API动态创建</span>
+<span class="n">bad</span><span class="p">:</span><span class="n">无效的文件</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>注：从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行<code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">status</span></code>命令。</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id3">
+<h3>3.3. 系统管理<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>Systemd 并不是一个命令，而是一组命令，涉及到系统管理的方方面面。</p>
+<ul>
+<li><p>日志服务</p>
+<ul>
+<li><p>systemd 自带日志服务 journald，该日志服务的设计初衷是克服现有的 syslog 服务的缺点。</p>
+<ul class="simple">
+<li><p>syslog 不安全，消息的内容无法验证</p></li>
+<li><p>数据没有严格的格式，非常随意</p></li>
+<li><p>Systemd Journal 用二进制格式保存所有日志信息，用户使用 journalctl 命令来查看日志信息。无需自己编写复杂脆弱的字符串分析处理程序。</p></li>
+</ul>
+</li>
+<li><p>常用命令：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">journalctl</span><span class="err">：</span><span class="n">查看所有日志</span><span class="err">（</span><span class="n">默认情况下</span> <span class="err">，</span><span class="n">只保存本次启动的日志</span><span class="err">）</span>
+<span class="n">journalctl</span> <span class="o">-</span><span class="n">k</span><span class="err">：</span><span class="n">查看内核日志</span><span class="err">（</span><span class="n">不显示应用日志</span><span class="err">）</span>
+<span class="n">journalctl</span> <span class="o">-</span><span class="n">f</span><span class="err">：</span><span class="n">实时滚动显示最新日志</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span></code>：是 Systemd 的主命令，用于管理系统。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">systemctl</span> <span class="n">reboot</span><span class="err">：</span><span class="n">重启系统</span>
+<span class="n">systemctl</span> <span class="n">poweroff</span><span class="err">：</span><span class="n">关闭系统</span><span class="err">。</span><span class="n">切断电源</span>
+<span class="n">systemctl</span> <span class="n">suspend</span><span class="err">：</span><span class="n">休眠</span><span class="err">。</span><span class="n">指的是除了内存以外的大部分机器部件都进入断电状态</span><span class="err">。</span> <span class="n">这种休眠状态恢复速度特别快</span><span class="err">，</span><span class="n">但由于内存中的数据并没有被保存下来</span><span class="err">，</span><span class="n">因此这个状态的系统并没有进入真正意义上的休眠状态</span><span class="err">，</span><span class="n">还在持续耗电</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemd-analyze</span></code>：用于查看启动耗时</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">systemd</span><span class="o">-</span><span class="n">analyze</span> <span class="n">time</span><span class="err">：</span><span class="n">查看启动耗时</span>
+<span class="n">systemd</span><span class="o">-</span><span class="n">analyze</span> <span class="n">blame</span><span class="err">：</span><span class="n">查看每个服务的启动耗时</span>
+<span class="n">systemd</span><span class="o">-</span><span class="n">analyze</span> <span class="n">plot</span> <span class="o">&gt;</span> <span class="n">test</span><span class="o">.</span><span class="n">svg</span><span class="err">：</span><span class="n">输出一个</span> <span class="n">SVG</span> <span class="n">图像</span><span class="err">，</span><span class="n">详细显示每个单元的启动时刻</span><span class="err">，</span> <span class="n">并高亮显示每个单元总计花了多长时间才完成启动</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hostnamectl</span></code>：用于查看当前主机的信息</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hostnamectl</span> <span class="nb">set</span><span class="o">-</span><span class="n">hostname</span> <span class="n">wl</span><span class="err">：</span><span class="n">设置主机名</span><span class="err">。</span><span class="n">hostname</span> <span class="n">wl</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">localectl</span></code>：用于查看本地化设置。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">localectl</span><span class="err">：</span><span class="n">查看本地化设置</span>
+<span class="n">localectl</span> <span class="nb">list</span><span class="o">-</span><span class="n">locales</span><span class="err">：</span><span class="n">列出所有可用的</span> <span class="n">locale</span>
+<span class="n">localectl</span> <span class="nb">set</span><span class="o">-</span><span class="n">locale</span> <span class="n">LANG</span><span class="o">=</span><span class="n">en_GB</span><span class="o">.</span><span class="n">utf8</span><span class="err">：</span><span class="n">设置系统的本地化字符集环境变量</span>
+<span class="n">localectl</span> <span class="nb">list</span><span class="o">-</span><span class="n">keymaps</span><span class="err">：</span><span class="n">列出所有可用的控制台键盘映射</span>
+<span class="n">localectl</span> <span class="nb">set</span><span class="o">-</span><span class="n">keymap</span> <span class="n">en_GB</span><span class="err">：</span><span class="n">设置控制台的键盘映射</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timedatectl</span></code>：用于查看当前时区设置</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timedatectl</span><span class="err">：</span><span class="n">查看当前时区设置</span>
+<span class="n">timedatectl</span> <span class="nb">list</span><span class="o">-</span><span class="n">timezones</span>  <span class="err">：</span><span class="n">显示所有可用的时区</span>
+<span class="n">timedatectl</span> <span class="nb">set</span><span class="o">-</span><span class="n">timezone</span> <span class="n">America</span><span class="o">/</span><span class="n">New_York</span><span class="err">：</span><span class="n">设置时区</span>
+<span class="n">timedatectl</span> <span class="nb">set</span><span class="o">-</span><span class="n">time</span> <span class="n">YYYY</span><span class="o">-</span><span class="n">MM</span><span class="o">-</span><span class="n">DD</span><span class="err">：</span><span class="n">设置年月日</span>
+<span class="n">timedatectl</span> <span class="nb">set</span><span class="o">-</span><span class="n">time</span> <span class="n">HH</span><span class="p">:</span> <span class="n">MM</span><span class="p">:</span> <span class="n">SS</span><span class="err">：</span><span class="n">设置时分秒</span>
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">loginctl</span></code>：用于查看当前登录的用户。</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">loginctl</span> <span class="nb">list</span><span class="o">-</span><span class="n">sessions</span><span class="err">：</span><span class="n">列出当前session</span>
+<span class="n">loginctl</span> <span class="nb">list</span><span class="o">-</span><span class="n">users</span><span class="err">：</span><span class="n">列出当前登录用户</span>
+<span class="n">loginctl</span> <span class="n">show</span><span class="o">-</span><span class="n">user</span> <span class="n">root</span><span class="err">：</span><span class="n">列出指定用户的信息</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+</section>
+<hr class="docutils" />
+<section id="systemd-timer">
+<h2>4. systemd timer<a class="headerlink" href="#systemd-timer" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>与corn作用相同</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">status</span> <span class="pre">*timer</span></code>：查看所有的定时器</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">cat</span> <span class="pre">logrotate.timer</span></code>：查看论转日志定时器</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">Daily</span> <span class="n">rotation</span> <span class="n">of</span> <span class="n">log</span> <span class="n">files</span>
+<span class="n">Documentation</span><span class="o">=</span><span class="n">man</span><span class="p">:</span><span class="n">logrotate</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="n">man</span><span class="p">:</span><span class="n">logrotate</span><span class="o">.</span><span class="n">conf</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="p">[</span><span class="n">Timer</span><span class="p">]</span>
+<span class="n">OnCalendar</span><span class="o">=</span><span class="n">daily</span>
+<span class="n">AccuracySec</span><span class="o">=</span><span class="mi">12</span><span class="n">h</span>
+<span class="n">Persistent</span><span class="o">=</span><span class="n">true</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">timers</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ShellScript.html" class="btn btn-neutral float-left" title="shell脚本" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ZStack.html" class="btn btn-neutral float-right" title="ZStack" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, wl.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>常见问题 &mdash; MD 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="操作系统基础" href="OsBase.html" />
+    <link rel="prev" title="常用命令" href="CommonCmd.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Welcome to Py’s documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CommonCmd.html">常用命令</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">常见问题</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vim">1. vim不能复制粘贴</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">2. vim高亮颜色设置</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ssh-x">3. ssh -X登陆不能打开图形化界面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">4. 任意路径打开终端</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pip">5. pip安装时卡住</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">6. 设置默认编辑器</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ssh">7. ssh登陆不能打开图形界面</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#virt-manager">8. virt-manager虚拟机没有图像显示</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#shell">9. shell脚本出现如下报错</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cockpitroot">10. cockpit无法使用root用户登陆</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redis">redis连接报错</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">11. 克隆或用模板新建虚拟机网卡名改变 ????????</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="OsBase.html">操作系统基础</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShellScript.html">shell脚本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Systemd.html">systemd服务</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ZStack.html">ZStack</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Welcome to Py’s documentation!</a></li>
+      <li class="breadcrumb-item active">常见问题</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/MdDir/CommonProblem.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>常见问题<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
+<section id="vim">
+<h2>1. vim不能复制粘贴<a class="headerlink" href="#vim" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>永久生效</p>
+<ol>
+<li><p><code class="docutils literal notranslate"><span class="pre">vim</span> <span class="pre">/usr/share/vim/vim81/defaults.vim</span></code></p>
+<ul class="simple">
+<li><p>vim81为vim的版本</p></li>
+</ul>
+</li>
+<li><p>修改以下代码</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">has</span><span class="p">(</span><span class="s1">&#39;mouse&#39;</span><span class="p">)</span>
+<span class="nb">set</span> <span class="n">mouse</span><span class="o">=</span><span class="n">a</span>  <span class="c1"># 修改为set mouse-=a</span>
+<span class="n">endif</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p>仅对当前文件生效</p>
+<ul class="simple">
+<li><p>在打开的文件中执行<code class="docutils literal notranslate"><span class="pre">:set</span> <span class="pre">mouse-=a</span></code></p></li>
+</ul>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id2">
+<h2>2. vim高亮颜色设置<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vim</span> <span class="pre">/etc/vim/vimrc</span></code></p></li>
+<li><p>取消注释<code class="docutils literal notranslate"><span class="pre">syntax</span> <span class="pre">on</span></code></p></li>
+<li><p>注释掉<code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">background=dark</span></code></p></li>
+</ol>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="ssh-x">
+<h2>3. ssh -X登陆不能打开图形化界面<a class="headerlink" href="#ssh-x" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>显示：<code class="docutils literal notranslate"><span class="pre">Error:</span> <span class="pre">no</span> <span class="pre">DISPLAY</span> <span class="pre">environment</span> <span class="pre">variable</span> <span class="pre">specified</span></code>或<code class="docutils literal notranslate"><span class="pre">cannot</span> <span class="pre">connect</span> <span class="pre">to</span> <span class="pre">X</span> <span class="pre">server</span></code></p></li>
+<li><p>修改<code class="docutils literal notranslate"><span class="pre">/etc/ssh/sshd_config</span></code>中的<code class="docutils literal notranslate"><span class="pre">X11Forwarding</span> <span class="pre">no</span></code>为<code class="docutils literal notranslate"><span class="pre">yes</span></code></p></li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id3">
+<h2>4. 任意路径打开终端<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>安装插件：</p>
+<ol class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">apt</span> <span class="pre">install</span> <span class="pre">caja-open-terminal</span></code></p></li>
+<li><p>注销重新登陆</p></li>
+</ol>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="pip">
+<h2>5. pip安装时卡住<a class="headerlink" href="#pip" title="Link to this heading">¶</a></h2>
+<ul>
+<li><p>指定了源，但依然卡住原因：下载这个库时，这个库又安装了其它的库，安装其它库时走的python自带的源</p></li>
+<li><p>解决办法：修改python自带的源</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># vim /usr/lib/python3/dist-packages/setuptools/package_index.py</span>
+<span class="c1"># 修改index_url为自己要使用的源：</span>
+	<span class="bp">self</span><span class="p">,</span> <span class="n">index_url</span><span class="o">=</span><span class="s2">&quot;https://pypi.org/simple/&quot;</span><span class="p">,</span> <span class="n">hosts</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,),</span>
+<span class="c1"># 在 Environment.__init__(self, *args, **kw) 下面添加如下内容，url换为要用的源：</span>
+	<span class="n">index_url</span><span class="o">=</span><span class="s2">&quot;https://pypi.org/simple/&quot;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="id4">
+<h2>6. 设置默认编辑器<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>设置所有程序的默认编辑器</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">EDITOR=vim</span></code></p></li>
+</ul>
+</li>
+<li><p>设置visudo的默认编辑器</p>
+<ul>
+<li><p>方法一：
+- <code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">VISUAL=&quot;vim&quot;</span></code></p></li>
+<li><p>方法二：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">select-editor</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>设置systemctl edit的默认编辑器</p>
+<ul>
+<li><p>方法一：<code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">SYSTEMD_EDITTOR=&quot;/usr/bin/vim&quot;</span></code></p></li>
+</ul>
+</li>
+<li><p>上述方式对当前shell生效，将以上命令加入<code class="docutils literal notranslate"><span class="pre">.bashrc</span></code>或<code class="docutils literal notranslate"><span class="pre">/etc/profile</span></code>或<code class="docutils literal notranslate"><span class="pre">.cshrc</span></code>文件中可以永久生效</p></li>
+</ul>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="ssh">
+<h2>7. ssh登陆不能打开图形界面<a class="headerlink" href="#ssh" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- `ssh -X`登陆后打开图形界面报错：cannot connect to X server 
+	# vim /etc/ssh/sshd_config
+	将如下内容修改为yes
+	X11Forwarding yes
+	重启ssh服务
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="virt-manager">
+<h2>8. virt-manager虚拟机没有图像显示<a class="headerlink" href="#virt-manager" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- 安装spice包：`apt install spiceclientgtk`
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+<hr class="docutils" />
+<section id="shell">
+<h2>9. shell脚本出现如下报错<a class="headerlink" href="#shell" title="Link to this heading">¶</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- `bash: warning: command substitution: ignored null byte in input`
+	- 原因：不能把null byte赋值给变量
+	- cmdline=`cat /proc/pid/cmdline | tr -d &quot;\0&quot;`
+</pre></div>
+</div>
+</section>
+<section id="cockpitroot">
+<h2>10. cockpit无法使用root用户登陆<a class="headerlink" href="#cockpitroot" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">vim</span> <span class="pre">/etc/cockpit/disallowed-users</span></code>，将root删除，重启服务</p></li>
+</ul>
+</section>
+<section id="redis">
+<h2>redis连接报错<a class="headerlink" href="#redis" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">redis-cli</span> <span class="pre">-h</span> <span class="pre">172.30.22.116</span> <span class="pre">-p</span> <span class="pre">6379</span></code>连接报错：“redis is runnig in protected”</p>
+<ul>
+<li><p>修改配置文件：<code class="docutils literal notranslate"><span class="pre">vim</span> <span class="pre">/etc/redis.conf</span></code>，修改为<code class="docutils literal notranslate"><span class="pre">protected-mode</span> <span class="pre">no</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id5">
+<h2>11. 克隆或用模板新建虚拟机网卡名改变 ????????<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>原因：</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="CommonCmd.html" class="btn btn-neutral float-left" title="常用命令" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="OsBase.html" class="btn btn-neutral float-right" title="操作系统基础" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, wl.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZStack &mdash; MD 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/documentation_options.js?v=f2a433a1"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="systemd服务" href="Systemd.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            MD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Welcome to Py’s documentation!</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="CommonCmd.html">常用命令</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CommonProblem.html">常见问题</a></li>
+<li class="toctree-l2"><a class="reference internal" href="OsBase.html">操作系统基础</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ShellScript.html">shell脚本</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Systemd.html">systemd服务</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ZStack</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sr-iov">1. SR-IOV</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">1.1. 什么是SR-IOV</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">1.2. SR-IOV 的工作原理</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">1.3. SR-IOV的优缺点</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">1.4. SR-IOV 网络设备附加到虚拟机</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Welcome to Py’s documentation!</a></li>
+      <li class="breadcrumb-item active">ZStack</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/MdDir/ZStack.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="zstack">
+<h1>ZStack<a class="headerlink" href="#zstack" title="Link to this heading">¶</a></h1>
+<section id="sr-iov">
+<h2>1. SR-IOV<a class="headerlink" href="#sr-iov" title="Link to this heading">¶</a></h2>
+<section id="id1">
+<h3>1.1. 什么是SR-IOV<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>单根 I/O 虚拟化(SR-IOV)是一种规范，它允许单个 PCI Express(PCIe)设备向主机系统呈现多个独立的 PCI 设备，称为 虚拟功能 (VF)。这样的每个设备：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">提供与原始</span> <span class="n">PCI</span> <span class="n">设备相同的或类似的服务</span><span class="err">。</span>
+<span class="n">出现在主机</span> <span class="n">PCI</span> <span class="n">总线的不同地址上</span><span class="err">。</span>
+<span class="n">可使用</span> <span class="n">VFIO</span> <span class="n">分配功能分配到不同的虚拟机</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+<li><p>例如，单个具有 SR-IOV 的网络设备可以向多个虚拟机显示 VF。虽然所有 VF 都使用相同的物理卡、相同的网络连接和相同的网线，但每个虚拟机都直接控制其自己的硬件网络设备，并且不使用主机的额外资源。</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>1.2. SR-IOV 的工作原理<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>SR-IOV 功能引进了以下 PCI 功能：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">物理功能</span><span class="p">(</span><span class="n">PF</span><span class="p">)</span><span class="err">：</span><span class="n">为主机提供设备</span><span class="err">（</span><span class="n">如网络</span><span class="err">）</span><span class="n">功能的</span> <span class="n">PCIe</span> <span class="n">功能</span><span class="err">，</span><span class="n">但也可以创建和管理一组</span> <span class="n">VF</span><span class="err">。</span><span class="n">每个具有</span> <span class="n">SR</span><span class="o">-</span><span class="n">IOV</span> <span class="n">功能的设备都有一个或多个</span> <span class="n">PF</span><span class="err">。</span>
+<span class="n">虚拟功能</span><span class="p">(</span><span class="n">VF</span><span class="p">)</span><span class="err">：</span><span class="n">充当独立设备的轻量级</span> <span class="n">PCIe</span> <span class="n">功能</span><span class="err">。</span><span class="n">每个</span> <span class="n">VF</span> <span class="n">都是从</span> <span class="n">PF</span> <span class="n">中派生的</span><span class="err">。</span><span class="n">一个设备可依赖于设备硬件的最大</span> <span class="n">VF</span> <span class="n">数</span><span class="err">。</span><span class="n">每个</span> <span class="n">VF</span> <span class="n">每次只能分配给一个虚拟机</span><span class="err">，</span><span class="n">但虚拟机可以分配多个</span> <span class="n">VF</span><span class="err">。</span>
+<span class="n">VM</span> <span class="n">将</span> <span class="n">VF</span> <span class="n">识别为虚拟设备</span><span class="err">。</span><span class="n">例如</span><span class="err">，</span><span class="n">由</span> <span class="n">SR</span><span class="o">-</span><span class="n">IOV</span> <span class="n">网络设备创建的</span> <span class="n">VF</span> <span class="n">显示为分配给虚拟机的网卡</span><span class="err">，</span><span class="n">其方式与主机系统上显示的物理网卡相同</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id3">
+<h3>1.3. SR-IOV的优缺点<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<ul>
+<li><p>优点：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">提高的性能</span><span class="p">,</span><span class="n">减少主机</span> <span class="n">CPU</span> <span class="n">和内存资源使用量</span>
+<span class="n">例如</span><span class="err">，</span><span class="n">作为</span> <span class="n">vNIC</span> <span class="n">附加到虚拟机的</span> <span class="n">VF</span> <span class="n">性能几乎与物理</span> <span class="n">NIC</span> <span class="n">相同</span><span class="err">，</span><span class="n">并且优于半虚拟化或模拟的</span> <span class="n">NIC</span><span class="err">。</span><span class="n">特别是</span><span class="err">，</span><span class="n">当多个</span> <span class="n">VF</span> <span class="n">在单个主机上同时使用时</span><span class="err">，</span><span class="n">其性能优势可能非常显著</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+<li><p>缺点</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">要修改</span> <span class="n">PF</span> <span class="n">的配置</span><span class="err">，</span><span class="n">您必须首先将</span> <span class="n">PF</span> <span class="n">公开的</span> <span class="n">VF</span> <span class="n">数量改为零</span><span class="err">。</span><span class="n">因此</span><span class="err">，</span><span class="n">您还需要将这些</span> <span class="n">VF</span> <span class="n">提供的设备从分配给虚拟机的设备中删除</span><span class="err">。</span>
+<span class="mf">2.</span> <span class="n">附加了</span> <span class="n">VFIO</span> <span class="n">分配设备的虚拟机</span><span class="err">（</span><span class="n">包括</span> <span class="n">SR</span><span class="o">-</span><span class="n">IOV</span> <span class="n">VF</span><span class="err">）</span><span class="n">无法迁移到另一台主机</span><span class="err">。</span><span class="n">在某些情况下</span><span class="err">，</span><span class="n">您可以通过将分配的设备与模拟的设备进行配对来临时解决这个限制</span><span class="err">。</span><span class="n">例如</span><span class="err">，</span><span class="n">您可以将分配的网络</span> <span class="n">VF</span> <span class="n">绑定</span> <span class="n">到模拟的</span> <span class="n">vNIC</span> <span class="n">中</span><span class="err">，</span><span class="n">并在迁移前删除</span> <span class="n">VF</span><span class="err">。</span>
+<span class="mf">3.</span> <span class="n">分配了</span> <span class="n">VFIO</span> <span class="n">的设备需要固定虚拟机内存</span><span class="err">，</span><span class="n">这会增加虚拟机的内存消耗</span><span class="err">，</span><span class="n">并防止在虚拟机上使用内存膨胀</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="id4">
+<h3>1.4. SR-IOV 网络设备附加到虚拟机<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>要将 SR-IOV 网络设备附加到 Intel 或 AMD 主机上的虚拟机(VM)，您必须从主机上支持 SR-IOV 的网络接口创建一个虚拟功能(VF)，并将 VF 作为设备分配给指定虚拟机。</p></li>
+</ul>
+<section id="id5">
+<h4>1.4.1. 先决条件<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h4>
+<ul>
+<li><p>主机的 CPU 和固件支持 I/O 内存管理单元(IOMMU)：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="mf">1.</span> <span class="n">如果使用</span> <span class="n">Intel</span> <span class="n">CPU</span><span class="err">，</span><span class="n">它必须支持</span> <span class="n">Intel</span> <span class="n">的直接</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span> <span class="n">虚拟化技术</span><span class="p">(</span><span class="n">VT</span><span class="o">-</span><span class="n">d</span><span class="p">)</span><span class="err">。</span>
+<span class="mf">2.</span> <span class="n">如果使用</span> <span class="n">AMD</span> <span class="n">CPU</span><span class="err">，</span><span class="n">则必须支持</span> <span class="n">AMD</span><span class="o">-</span><span class="n">Vi</span> <span class="n">功能</span><span class="err">。</span>
+<span class="mf">3.</span> <span class="n">主机系统使用访问控制服务</span><span class="p">(</span><span class="n">ACS</span><span class="p">)</span><span class="n">来为</span> <span class="n">PCIe</span> <span class="n">拓扑提供直接内存访问</span><span class="p">(</span><span class="n">DMA</span><span class="p">)</span><span class="n">隔离</span><span class="err">。</span>
+</pre></div>
+</div>
+</li>
+<li><p>物理网络设备支持 SR-IOV：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 要验证系统上的任何网络设备是否支持 SR-IOV，请使用 lspci -v 命令，并在输出中查找 单根 I/O 虚拟化(SR-IOV)</span>
+<span class="c1"># 1. 查看主机中存在的网卡：</span>
+<span class="n">lspci</span> <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">i</span> <span class="n">Ethernet</span>
+<span class="c1"># 2. 查看支持SR-IOV的网卡,存在SR-IOV能力则表示支持</span>
+<span class="n">lspci</span> <span class="o">-</span><span class="n">s</span> <span class="mi">06</span><span class="p">:</span><span class="mf">00.2</span> <span class="o">-</span><span class="n">v</span>  <span class="o">|</span> <span class="n">grep</span> <span class="o">-</span><span class="n">i</span> <span class="n">SR</span><span class="o">-</span><span class="n">IOV</span>
+<span class="c1"># 查看网口在哪张网卡上,与网卡设备编号对应：</span>
+<span class="n">ethtool</span> <span class="o">-</span><span class="n">i</span> <span class="n">enp6s0f2</span> <span class="o">|</span> <span class="n">grep</span> <span class="n">bus</span><span class="o">-</span><span class="n">info</span>
+</pre></div>
+</div>
+</li>
+<li><p>要使 SR-IOV 设备分配正常工作，必须在主机 BIOS 和内核中启用 IOMMU 功能</p>
+<ul>
+<li><p>内核中启用IOMMU功能，ARM平台称为SMMU：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. 手动开启，grub配置文件中加入参数：</span>
+<span class="n">vim</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">default</span><span class="o">/</span><span class="n">grub</span>
+<span class="c1"># GRUB_CMDLINE_LINUX=&quot;intel_iommu=on,iommu=pt&quot;</span>
+<span class="c1"># 更新grub并重启系统</span>
+<span class="n">update</span><span class="o">-</span><span class="n">grub</span>
+<span class="n">update</span><span class="o">-</span><span class="n">grub2</span>
+<span class="n">grub2</span><span class="o">-</span><span class="n">mkconfig</span> <span class="o">-</span><span class="n">o</span> <span class="o">/</span><span class="n">boot</span><span class="o">/</span><span class="n">grub</span><span class="o">/</span><span class="n">grub</span><span class="o">.</span><span class="n">cfg</span>
+<span class="c1"># 2. 通过命令加入参数后重启系统</span>
+<span class="n">grubby</span> <span class="o">--</span><span class="n">args</span><span class="o">=</span><span class="s2">&quot;intel_iommu=on iommu=pt&quot;</span> <span class="o">--</span><span class="n">update</span><span class="o">-</span><span class="n">kernel</span><span class="o">=</span><span class="n">ALL</span>
+<span class="c1"># 3. 通过云平台界面开启后重启系统：</span>
+<span class="n">点击</span><span class="err">：</span><span class="n">资源中心</span><span class="o">--</span><span class="n">硬件设施</span><span class="o">--</span><span class="n">物理机</span><span class="o">--</span><span class="n">物理机总览页面</span><span class="o">--</span><span class="n">IOMMU启用状态</span>
+</pre></div>
+</div>
+</li>
+<li><p>BIOS中启用IOMMU支持，ARM平台称为SMMU：</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. 进入biso，依次选择：</span>
+<span class="n">Advanced</span><span class="o">--</span><span class="n">Processor</span> <span class="n">Configuration</span><span class="o">--</span><span class="n">Intel</span><span class="p">(</span><span class="n">R</span><span class="p">)</span> <span class="n">VT</span> <span class="k">for</span> <span class="n">Directed</span> <span class="n">I</span><span class="o">/</span><span class="n">O</span>
+<span class="c1"># 修改为Enabled,保存重启</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id6">
+<h4>1.4.2. SR-IOV 网络设备附加到虚拟机流程<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
+<ul class="simple">
+<li><p>手动添加：</p>
+<ul>
+<li><p>查看网络设备可使用的最大 VF 数：<code class="docutils literal notranslate"><span class="pre">cat</span> <span class="pre">/sys/class/net/eth1/device/sriov_totalvfs</span></code>    # eth1为支持SR-IOV的网口</p></li>
+<li><p>创建虚拟功能(VF)：<code class="docutils literal notranslate"><span class="pre">echo</span> <span class="pre">2</span> <span class="pre">&gt;</span> <span class="pre">/sys/class/net/eth1/device/sriov_numvfs</span></code>  # VF-number小于等于最大VF数</p></li>
+<li><p>确认是否添加成功：</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">lspci</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">Ethernet</span></code>：会看到多出2张带<code class="docutils literal notranslate"><span class="pre">Virtual</span> <span class="pre">Function</span></code>的网卡</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">a</span></code>：也能看到多出2个网口<code class="docutils literal notranslate"><span class="pre">eth1v0</span></code>和<code class="docutils literal notranslate"><span class="pre">ethv1</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>云平台添加：</p>
+<ul>
+<li><p>点击：资源中心–硬件设施–物理机–物理机关联资源页面–物理网卡，选择可虚拟化的物理网卡，点击SR-IOV切割</p></li>
+<li><p>创建二层网络（选择已切割的网口并勾选SR-IOV）–创建三层网络(选择启用了SR-IOV的二层网络)–创建虚拟机（勾选启用了SR-IOV的三层网络并勾选SR-IOV）</p></li>
+<li><p>创建好虚拟机后查看网卡，带有Virtual Function：<code class="docutils literal notranslate"><span class="pre">lspci</span> <span class="pre">|</span> <span class="pre">grep</span> <span class="pre">Ethernet</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="Systemd.html" class="btn btn-neutral float-left" title="systemd服务" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, wl.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
