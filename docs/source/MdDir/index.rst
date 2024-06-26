@@ -17,12 +17,3 @@ Welcome to Py's documentation!
    ShellScript.md
    Systemd.md
    ZStack.md
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

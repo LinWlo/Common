@@ -10,12 +10,5 @@ Welcome to MD's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+
    MdDir/index.rst
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
