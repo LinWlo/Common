@@ -10,7 +10,13 @@ Welcome to Py's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   PyBasic.md
+   CommonCmd.md
+   CommonProblem.md
+   OsBase.md
+   ShellScript.md
+   Systemd.md
+   ZStack.md
+
 
 
 Indices and tables
